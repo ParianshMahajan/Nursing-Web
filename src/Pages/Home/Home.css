@@ -1,0 +1,28 @@
+.home{
+    height: 100vh;
+    background-color: #BBEBFF;
+    padding: 0 60px;
+}
+
+.homeHeadings{
+    width: 100%;
+    padding-top: 100px;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    color: #003E58;
+}
+
+.homeHead{
+    font-weight: bold;
+    font-size: 65px;
+    letter-spacing: 5px;
+}
+
+.homeTagDown{
+    margin-top: 20px;
+}
