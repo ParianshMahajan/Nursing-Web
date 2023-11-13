@@ -1,6 +1,8 @@
 .navbar{
     padding: 15px 50px;
     background-color: #BBEBFF;
+    /* position:sticky;
+    top: 0; */
 }
 
 .nav-item > a{

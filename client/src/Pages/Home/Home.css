@@ -1,5 +1,5 @@
 .home{
-    height: 100vh;
+    height: 150vh;
     background-color: #BBEBFF;
     padding: 0 60px;
 }
@@ -24,5 +24,36 @@
 }
 
 .homeTagDown{
+    margin-top: 20px;
+}
+
+.homeSearchCont{
+    display: flex;
+    justify-content: center;
+    align-items: centers;
+    margin-top: 50px;
+}
+
+.homeSelectorCont{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.homeSelector{
+    display: flex;
+    flex-direction: column;
+
+    width: 60%;
+    color: #003E58;
+
+    margin-top: 50px;
+}
+
+.selectors{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
     margin-top: 20px;
 }

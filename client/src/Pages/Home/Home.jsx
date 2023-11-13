@@ -1,6 +1,8 @@
 import React from 'react'
 import "./Home.css"
 import Navbar from '../Components/Navbar/Navbar'
+import Searchbar from '../Components/Searchbar/Searchbar'
+import Selector from './Components/Selectors/Selector'
 
 export default function Home() {
   return (
@@ -15,7 +17,25 @@ export default function Home() {
             Starts at just 10$, Exclusively on our mobile app
           </p>
         </div>
+
+        <div className="homeSearchCont">
+          <Searchbar/>
+        </div>
+
+        <div className="homeSelectorCont">
+          <div className="homeSelector">
+            <h5>Are You Looking For:</h5>
+            <div className="selectors">
+              <Selector/>
+              <Selector/>
+              <Selector/>
+            </div>
+          </div>
+        </div>
+
       </div>
+
+      
     </>
   )
 }
