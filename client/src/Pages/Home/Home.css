@@ -51,9 +51,33 @@
     margin-top: 50px;
 }
 
-.selectors{
+.homeSelectors{
     display: flex;
     justify-content: space-between;
     width: 100%;
     margin-top: 20px;
+}
+
+.homeVideoCont{
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: -250px;
+    padding: 0 150px;
+}
+
+.homeVideo{
+    width: 100%;
+    height: 100%;
+    background-color: #003E58;
+    
+    border-radius: 20px;
+    border: 10px solid white;
+    box-shadow: 0 0 50px -25px #003E58;
+}
+
+.pp{
+    height: 100vh;
 }
