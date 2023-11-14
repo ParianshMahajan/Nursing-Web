@@ -1,10 +1,8 @@
 const { mongoose } = require("mongoose");
-var validator = require("email-validator");
-require('dotenv').config();
 
 
 const Schema = mongoose.Schema;
-const usersSchema = new Schema({
+const nurses = new Schema({
     ImgUrl: {
         type: String,
     },
@@ -25,6 +23,9 @@ const usersSchema = new Schema({
             return this.ConfirmPassword==this.Password;
         }
     },
+    AboutMe:{
+        type: String
+    },
     Email:{
         type:String,
         unique:true,
@@ -34,6 +35,19 @@ const usersSchema = new Schema({
     },
     PhoneNumber: {
         type: Number
+    },
+    Skilled:{
+        type:Number,
+        // 1--->Skilled;
+        // 2--->Semi-Skilled;
+        // 3--->UnSkilled;
+    },
+    Skills:{
+        type:Array
+    },
+    Links:{
+        type:JSON
+        // Contains links or certificates or achievements
     },
     Price:{
         type:Number,
@@ -47,21 +61,12 @@ const usersSchema = new Schema({
     Address:{
         type:String, 
     },
-    IsReport:{
-        type:Boolean,
-        // Report on any kind of misbhave of user with nurse
+    Ratings:{
+        type:Number,
+        // [1-5]
+        // Avergae of all the Records
     },
 });
 
-    
-usersSchema.pre('save',function(){
-    this.ConfirmPassword=undefined;
-});
 
-
-
-
-
-
-
-module.exports = mongoose.model("user", usersSchema);
+module.exports = mongoose.model("nurses", nurses);
