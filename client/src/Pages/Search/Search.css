@@ -1,0 +1,81 @@
+.searchCont{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 50px 0;
+}
+
+.searchFilterCont{
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 30px 5px;
+}
+
+.searchFilterCont > button{
+    background-color: #00b3ff;
+    color: white;
+    border-radius: 50px;
+    border: 0px solid;
+    padding: 10px 50px;
+}
+
+.searchFilter{
+    display: flex;
+    flex-direction: column;
+}
+
+.searchFilter > label{
+    font-weight: bold;
+    color: #003E58;
+}
+
+.searchFilter > input, select, select:active, select:focus{
+    width: 200px;
+    height: 30px;
+    margin-top: 10px;
+
+    border: 0px solid;
+}
+
+.searchResults{
+    width: 90%;
+    margin-top: 50px;
+}
+
+.searchResult{
+    display: flex;
+    width: 100%;
+    /* background-color: grey; */
+
+    padding: 20px 20px;
+    border: 1px solid black
+}
+
+.searchResult:not(:nth-child(1)){
+    margin-top: 30px;   
+}
+
+.searchResultLeft> *{
+    margin: 0;
+    padding: 0;
+}
+
+.searchResultRight > *{
+    margin: 0;
+    padding: 0;
+}
+
+.searchResultRight{
+    direction: rtl;
+    width: 100px;
+    margin-left: auto;
+
+}
+
+.rating{
+    color: gold;
+}

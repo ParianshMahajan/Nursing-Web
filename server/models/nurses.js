@@ -7,18 +7,19 @@ const nurses = new Schema({
         type: String,
     },
     Name: {
-        type: String
+        type: String,
+        required: true,
     },
     Password:{
         type:String,
         required:true,
-        minLength:8,
+        // minLength:6,
     },
     ConfirmPassword:{
         type:String,
         required:true,
-        minLength:8,
-        validate:function(){                                                               
+        // minLength:8,
+        validate: () => {                                                               
             //Confirming Password....
             return this.ConfirmPassword==this.Password;
         }
@@ -29,15 +30,18 @@ const nurses = new Schema({
     Email:{
         type:String,
         unique:true,
+        required: true,
         validate:function(){
             return validator.validate(this.Email);
         }
     },
     PhoneNumber: {
-        type: Number
+        type: Number,
+        required: true,
     },
     Skilled:{
         type:Number,
+        required: true,
         // 1--->Skilled;
         // 2--->Semi-Skilled;
         // 3--->UnSkilled;
@@ -56,11 +60,19 @@ const nurses = new Schema({
         type:Schema.ObjectId,
     }],
     CurrentLocation:{
-        type:Location,
+        // type:Location,
     },
+
     Address:{
         type:String, 
     },
+    City:{
+        type:String, 
+    },
+    State:{
+        type:String, 
+    },
+
     Ratings:{
         type:Number,
         // [1-5]

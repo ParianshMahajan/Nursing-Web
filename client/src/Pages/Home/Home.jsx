@@ -19,7 +19,7 @@ export default function Home() {
         </div>
 
         <div className="homeSearchCont">
-          <Searchbar/>
+          <Searchbar width="60"/>
         </div>
 
         <div className="homeSelectorCont">
@@ -36,12 +36,55 @@ export default function Home() {
       </div>
 
       <div className="homeVideoCont">
-        <div className="homeVideo">
+        <div className="homeVideo"></div>
+        <div className="homeVideoSide leftside">
+          <div className='sideIcon'>
+          </div>
+          <div>
+            <h5 className='mb-2'>Consultant</h5>
+            <p>Lorem ipsum dolor sit amet.</p>
+          </div>
+        </div>
+        <div className="homeVideoSide righthside">
+        <div className='sideIcon'>
+          </div>
+          <div>
+            <h5 className='mb-2'>24/7 Service</h5>
+            <p>Lorem ipsum dolor sit amet.</p>
+          </div>
         </div>
       </div>
 
-      <div className="pp">
+      <div className="homeNurseTypes">
+        <h1>Hire Top Nurses Online For <br /> Any Health Priority</h1>
+        <p className='mt-2'>Lorem ipsum dolor sit amet consectetur adipisicing amet consectetur adipisicing.</p>
 
+        <div className="homeNurseTypeSelectors">
+          <div className="homeNurseTypeSelector">
+            <img src="" alt="" />
+            <h4>Somehting</h4>
+          </div>
+          <div className="homeNurseTypeSelector">
+            <img src="" alt="" />
+            <h4>Somehting</h4>
+          </div>
+          <div className="homeNurseTypeSelector">
+            <img src="" alt="" />
+            <h4>Somehting</h4>
+          </div>
+          <div className="homeNurseTypeSelector">
+            <img src="" alt="" />
+            <h4>Somehting</h4>
+          </div>
+          <div className="homeNurseTypeSelector">
+            <img src="" alt="" />
+            <h4>Somehting</h4>
+          </div>
+          <div className="homeNurseTypeSelector">
+            <img src="" alt="" />
+            <h4>Somehting</h4>
+          </div>
+        </div>
       </div>
 
       

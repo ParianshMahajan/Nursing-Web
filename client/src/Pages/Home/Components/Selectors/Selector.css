@@ -10,6 +10,7 @@
     padding: 0px 12px;
 
     cursor: pointer;
+    transition-duration: 300ms;
 }
 
 .selector > *{

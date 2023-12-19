@@ -58,14 +58,19 @@
     margin-top: 20px;
 }
 
+.homeSelectors:hover > :not(:hover){
+    opacity: 0.5;
+}
+
 .homeVideoCont{
-    height: 500px;
+    height: 550px;
     display: flex;
     align-items: center;
     justify-content: center;
 
     margin-top: -250px;
     padding: 0 150px;
+    position: relative;
 }
 
 .homeVideo{
@@ -78,6 +83,102 @@
     box-shadow: 0 0 50px -25px #003E58;
 }
 
-.pp{
-    height: 100vh;
+.homeVideoSide{
+    height: 120px;
+    width: 220px;
+    border-radius: 5px;
+    background-color: white;
+    position: absolute;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 25px 15px;
+
+    box-shadow: 0 0 50px -25px #003E58;
+}
+
+.sideIcon{
+    height: 100%;
+    width: 50px;
+    margin-right: 10px;
+}
+
+.homeVideoSide > div > *{
+    padding: 0;
+    margin: 0;
+    line-height: normal;
+}
+
+.homeVideoSide > div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.leftside{
+    left: 75px;
+    top: 20%;
+}
+
+.righthside{
+    right: 75px;
+    bottom: 20%;
+}
+
+.homeNurseTypes{
+    min-height: 100vh;
+    padding: 0 60px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 100px;
+    text-align: center;
+
+    color: #003E58;
+}
+
+.homeNurseTypeSelectors{
+    display: flex;
+    margin-top: 50px;
+    gap: 20px;
+    width: 100%;
+}
+
+.homeNurseTypeSelectors:hover > :not(:hover){
+    opacity: 0.5;
+}
+
+.homeNurseTypeSelector{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 5px;
+
+    width: calc(100%/6);
+    height: 200px;
+    background-color: lightgray;
+
+    transition-duration: 300ms;
+}
+
+.homeNurseTypeSelector>img{
+    height: 70px;
+    width: 70px;
+
+    background-color: #003E58;
+}
+
+.homeNurseTypeSelector>h4{
+    margin-top: 20px;
+}
+
+.homeNurseTypeSelector:hover{
+    height: 250px;
 }

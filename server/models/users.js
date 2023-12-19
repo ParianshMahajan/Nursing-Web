@@ -42,7 +42,7 @@ const usersSchema = new Schema({
         type:Schema.ObjectId,
     }],
     CurrentLocation:{
-        type:Location,
+        // type:Location,
     },
     Address:{
         type:String, 
