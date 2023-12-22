@@ -26,9 +26,9 @@ export default function Home() {
           <div className="homeSelector">
             <h5>Are You Looking For:</h5>
             <div className="homeSelectors">
-              <Selector/>
-              <Selector/>
-              <Selector/>
+              <Selector id='1' details='lorem ipsum etc etc 1'/>
+              <Selector id='2' details='lorem ipsum etc etc 2'/>
+              <Selector id='3' details='lorem ipsum etc etc 3'/>
             </div>
           </div>
         </div>

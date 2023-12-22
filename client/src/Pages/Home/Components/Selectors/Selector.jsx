@@ -1,11 +1,11 @@
 import React from 'react'
 import "./Selector.css"
 
-export default function Selector() {
+export default function Selector(props) {
   return (
     <div className="selector">
-        <h5>Selector Type 1</h5>
-        <p>Lorem ipsum dolor sit amet</p>
+        <h5>{`Selector Type ${props.id}`}</h5>
+        <p>{props.details}</p>
     </div>
   )
 }
