@@ -3,7 +3,7 @@ dotenv.config({ path: "./config.env" });
 const secret_key=process.env.secret_key;
 
 const jwt=require('jsonwebtoken');
-const users = require('../models/users');
+const users = require('../models/UserModel');
 
 module.exports.verify= async function verify(req,res,next){
     try {

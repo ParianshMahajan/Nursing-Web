@@ -6,7 +6,7 @@ const session = require('express-session');
 const path = require('path');
 const http = require('http');
 var https = require('https');
-const adminRouter = require('./Routers/adminRouter.js');
+const nurseRouter = require('./Routers/nurseRouter.js');
 
 
 
@@ -21,5 +21,5 @@ startRoutes();
 
 function startRoutes(){
   app.use('/user',require('./Routers/userRouter.js'));
-  app.use('/admin',adminRouter);
+  app.use('/nurse',nurseRouter);
 }
