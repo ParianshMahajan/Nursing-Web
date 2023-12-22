@@ -12,30 +12,207 @@ const NurseModel = require('../models/NurseModel');
 
 
 
+// SIGNUP
+
 module.exports.createUser= async function createUser(req,res){
-try {
-    let data=req.body; 
+    try {
+        let data=req.body; 
 
-    const link = await getImgurLink(data.ImgUrl);
-    data.ImgUrl=link;
-    let user=await UserModel.create(data);
-    
-    
-    const uuid=user._id;
-    const token=jwt.sign({user:uuid},secret_key);
+        const link = await getImgurLink(data.ImgUrl);
+        data.ImgUrl=link;
+        let user=await UserModel.create(data);
+        
+        const ip =
+        req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress;
 
-    res.json({
-        status:true,
-        token:token,
-    });
-    
-} catch (error) {
-    res.json({
-        message:error.message,
-        status:false
-    })
+        const payload={
+          uuid:user._id,
+          Role:'User',
+          IPV4:ip,
+        }
+
+        const token=jwt.sign(payload,secret_key);
+
+        let auth= await authModel.create({UserID:user._id,Role:"User",SessionID:token,IPV4:ip});
+
+        res.json({
+            status:true,
+            token:token,
+        });
+        
+    } catch (error) {
+        res.json({
+            message:error.message,
+            status:false
+        })
+    }
 }
-    
+
+
+
+
+// LOGIN
+// OTP generation and mail
+module.exports.UserLogin= async function UserLogin(req,res){
+    try {
+        let data=req.body;
+        let user=await UserModel.findOne(data.Email);
+
+        
+        if(user){
+            if(data.Password===user.Password){
+                
+                let otp = parseInt(crypto.randomBytes(3).toString("hex"),16).toString().substring(0, 6);
+                
+                let auth=await authModel.findOne({UserID:user._id});
+                
+                if(auth){
+                    auth.OTP=otp;
+                    await auth.save();
+                }
+                else{
+                    let auth= await authModel.create({UserID:user._id,Role:"User",OTP:otp});
+                }
+
+                //Mailing The OTP to the registered mail
+                sendMail(user.Email,otp);
+
+                res.json({
+                    status:true,
+                    message:"OTP has been sent"
+                });   
+            }
+            else{
+                res.json({
+                    status:false,
+                    message:"Incorrect password"
+                });
+            }
+        }
+        else{
+            res.json({
+                status:false,
+                message:"User does not exits"
+            });
+        }
+    } catch (error) {
+        res.json({
+            message:error.message,
+            status:false
+        })
+    }
+}
+
+
+
+//   OTP and JWT generation
+module.exports.UserLoginPart2= async function UserLoginPart2(req,res){
+    try {
+        let data=req.body;
+        let user=await UserModel.findOne(data.Email);
+        
+        if(user){
+            if(data.Password===user.Password){
+                
+                let auth=await authModel.findOne({UserID:user._id});
+                
+                if(auth.OTP===data.OTP){
+
+                    const ip =
+                    req.headers['x-forwarded-for'] ||
+                    req.connection.remoteAddress ||
+                    req.socket.remoteAddress ||
+                    req.connection.socket.remoteAddress;
+                    
+                    const payload={
+                        uuid:user._id,
+                        Role:"User",
+                        IPV4:ip,
+                    }
+                    const token=jwt.sign(payload,secret_key);
+                    
+                    auth.SessionID=token;
+                    auth.timestamp=Date.now();
+                    auth.IPV4=ip;
+                    auth.OTP=undefined;
+                    await auth.save();
+                    
+                    res.json({ 
+                        status:true,
+                        token:token,
+                    });   
+                }
+                else{
+                    res.json({
+                        status:false,
+                        message:"Incorrect OTP",
+                    });
+                }
+            }
+            else{
+                res.json({
+                    status:false,
+                    message:"Incorrect password"
+                });
+            }
+        }
+        else{
+            res.json({
+                status:false,
+                message:"User does not exits"
+            });
+        }
+        
+    } catch (error) {
+        res.status(500).json({
+            message:error.message
+        })
+    }
+  }   
+  
+
+
+
+
+
+
+// Fetch Requests
+module.exports.Requests= async function Requests(req,res){
+    try {
+        let nurse=res.nurse;
+
+        
+        let requests=[];
+
+        for(let i in nurse.Requests){
+            let request=nurse.Requests[i];
+            let user=await UserModel.findById(request.UserId);
+            request={...request,
+                    ImgUrl:user.ImgUrl,
+                    Name:user.Name,
+                    Email:user.Email,
+                    PhoneNumber:user.PhoneNumber ,
+                    Address:user.Address,
+            };
+            requests.push(request);
+        }
+
+
+        res.json({
+            status:true,
+            Requests:requests,
+        });
+        
+    } catch (error) {
+        res.json({
+            message:error.message,
+            status:false
+        })
+    }
+        
 }
 
 

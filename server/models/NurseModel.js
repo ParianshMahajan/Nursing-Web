@@ -58,7 +58,15 @@ const nurseSchema = new Schema({
     },
     Requests:[{
         type:JSON
+        // contains UserId, requirements, problem description, Location
     }],
+    CurrentApplication:{
+        type:Schema.Types.ObjectId,
+        ref:"nurseApps"
+    },
+    IsAvailable:{
+        type:Boolean,
+    },
     PreviousRecords:[{
         type:Schema.Types.ObjectId,
         ref:"nurseApps"
@@ -73,13 +81,10 @@ const nurseSchema = new Schema({
     City:{
         type:String, 
     },
-<<<<<<< HEAD:Actual Server/models/NurseModel.js
-=======
     State:{
         type:String, 
     },
 
->>>>>>> c196fca1c6683f19c3065d91745728248a18ea36:server/models/nurses.js
     Ratings:{
         type:Number,
         // [1-5]
@@ -89,6 +94,10 @@ const nurseSchema = new Schema({
         type:Boolean,
         default:false,
     }
+});
+
+nurseSchema.pre('save',function(){
+    this.ConfirmPassword=undefined;
 });
 
 
