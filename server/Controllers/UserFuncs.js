@@ -8,6 +8,7 @@ const secret_key=process.env.secret_key;
 const { default: getImgurLink } = require('../middlewares/ImgurAPI');
 const UserModel = require('../models/UserModel');
 const NurseModel = require('../models/NurseModel');
+const RequestModel = require('../models/RequestModel');
 
 
 
@@ -177,34 +178,126 @@ module.exports.UserLoginPart2= async function UserLoginPart2(req,res){
 
 
 
+  
+  
+  
+  
+  // Send Request to a nurse
+  module.exports.sendRequest= async function sendRequest(req,res){
+      try{
+          let data=req.body;
+          let user=res.user;
+          let requestData={
+              UserId:user._id,
+              NurseId:data.nurseId,
+              Reason:data.Reason,
+              Requirements:data.Requirements,
+              Location:data.Location,
+              Status:false,
+          }
+          let request=await RequestModel.create(requestData);
+          user.RequestSent.push(request._id);
+          let nurse=await NurseModel.findById(data.nurseId);
+          nurse.Requests.push(request._id);
+          res.jsom({
+              message:"Request Sent",
+              status:true
+          })
+      }
+      catch(err){
+          res.json({
+              message:err.message
+          })
+      }
+  }
+  
+  
+  
 
 
-// Fetch Requests
-module.exports.Requests= async function Requests(req,res){
+  
+  
+  
+  // Fetch Requests
+  module.exports.AllRequests= async function AllRequests(req,res){
+      try {
+          let user=res.user;
+          let requests=[];
+          for(let i in user.Requests){
+              let requestId=user.Requests[i];
+              let request=await RequestModel.findById(requestId);
+  
+              let nurse=await NurseModel.findById(request.UserId);
+              request={...request,
+                      ImgUrl:nurse.ImgUrl,
+                      Name:nurse.Name,
+                      Email:nurse.Email,
+                      PhoneNumber:nurse.PhoneNumber ,
+                      Address:nurse.Address,
+              };
+              requests.push(request);
+          }
+  
+  
+          res.json({
+              status:true,
+              Requests:requests,
+          });
+          
+      } catch (error) {
+          res.json({
+              message:error.message,
+              status:false
+          })
+      }
+          
+  }
+  
+
+
+
+
+
+
+  
+
+
+module.exports.initialPay= async function initialPay(req,res){
     try {
-        let nurse=res.nurse;
+        let data=req.body;
+        let user=res.user;
 
+        let payment=false;
         
-        let requests=[];
+        let nurse=await NurseModel.findById(data.nurseID);
+        nurse.IsAvailable=false;
 
-        for(let i in nurse.Requests){
-            let request=nurse.Requests[i];
-            let user=await UserModel.findById(request.UserId);
-            request={...request,
-                    ImgUrl:user.ImgUrl,
-                    Name:user.Name,
-                    Email:user.Email,
-                    PhoneNumber:user.PhoneNumber ,
-                    Address:user.Address,
-            };
-            requests.push(request);
+        await nurse.save();
+
+        //
+        
+        // <--------Payment Code------->
+        
+        // 
+        if(payment){
+            user.RequestSent=[];
+            await user.save();
+
+            res.json({
+                status:true,
+                Requests:requests,
+            });
+        }
+        else{
+            nurse.IsAvailable=true;
+            await nurse.save();
+            res.json({
+                status:false,
+            });
         }
 
-
-        res.json({
-            status:true,
-            Requests:requests,
-        });
+        
+        
         
     } catch (error) {
         res.json({
@@ -219,55 +312,63 @@ module.exports.Requests= async function Requests(req,res){
 
 
 
-// primary Filter ::- On the basis of City
-module.exports.sendNurses= async function sendNurses(req,res){
-    try {
-        let data=req.body;
-        let city=data.city;
-        let nurses= await NurseModel.find({City:city})
-
-        res.json({
-            status:true,
-            Nurses:nurses
-        }); 
-    } catch (error) {
-        res.json({
-            status:false,
-            message:error.message
-        })
-    }
-}   
 
 
 
 
 
-// Send Request to a nurse
-module.exports.sendRequest= async function sendRequest(req,res){
-    try{
-        let data=req.body;
-        let user=res.user;
-        let request={
-            UserId:user._id,
-            Reason:data.Reason,
-            Requirements:data.Requirements,
-            Location:data.Location
-        }                
-        let nurse=await NurseModel.findById(data.nurseId);
-        nurse.Requests.push(request);
-        res.jsom({
-            message:"Request Sent",
-            status:true
-        })
-    }
-    catch(err){
-        res.json({
-            message:err.message
-        })
-    }
-}
 
 
 
+
+  
+  
+
+
+
+
+
+// // primary Filter ::- On the basis of City  
+// module.exports.sendNurses= async function sendNurses(req,res){
+//     try {
+//         let data=req.body;
+//         let city=data.city;
+//         let nurses= await NurseModel.find({City:city})
+
+//         res.json({
+//             status:true,
+//             Nurses:nurses
+//         });     
+//     } catch (error) {
+//         res.json({
+//             status:false,
+//             message:error.message
+//         })    
+//     }    
+// }       
+
+
+// module.exports.test= async function test(req,res){
+//     try {
+        
+//         let data={
+//             test:[{message:"hello"}]
+//         }
+//         let testing=await testModel.create(data);
+//         console.log(testing);
+//         testing.test.push({message:"hi"});
+//         testing.test.push({message:"hiii"});
+//         await testing.save();
+//         res.json({
+//             status:true,
+//         });
+        
+//     } catch (error) {
+//         res.json({
+//             message:error.message,
+//             status:false
+//         })
+//     }
+// }
 
 

@@ -3,37 +3,10 @@ const { apply, sendData, createUser, updateProfile, pastApp, changeSlot, test, s
 const app=express();
 const userRouter=express.Router();
 
-// not loggedIn then /newuser 
-userRouter
-.route('/create')
-.post(createUser)
-
-
-
-//if some changes done while applying they will automatically merged in user profile
-userRouter
-.route('/apply')
-.post(verify,apply)
-
-
-
-
-
-
-
-
-//test
-userRouter
-.route('/test')
-.get(test)
-
-
-
-
-
-
-
-
+// // not loggedIn then /newuser 
+// userRouter
+// .route('/create')
+// .post(createUser)
 
 
 module.exports=userRouter;
