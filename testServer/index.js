@@ -89,16 +89,21 @@ app.get("/search", async function(req, res){
     let q = req.query;
 
     for(var key in q){
-        
         if(q[key] == "0"){
             delete(q[key]);
         }
-
     }
 
     console.log(q);
-    
     const data = await Nurse.find(q);
+    res.send(data);
+
+})
+
+app.get("/nurse/:id", async function(req, res){
+
+    console.log(req.params.id);
+    const data = await Nurse.find({_id: req.params.id});
     res.send(data);
 
 })
