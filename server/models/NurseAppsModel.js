@@ -1,10 +1,11 @@
-const { mongoose } = require("mongoose");
+const mongoose = require("mongoose");
 
 
 const Schema = mongoose.Schema;
-const nurseApps = new Schema({
+const nurseAppsSchema = new Schema({
     NurseId: {
-        type:Schema.ObjectId,
+        type: Schema.Types.ObjectId,
+        ref: "nurse"
     },
     Skilled:{
         type:Number,
@@ -13,7 +14,7 @@ const nurseApps = new Schema({
         // 3--->UnSkilled;
     },
     Skills:{
-        type:Array
+        type:JSON
     },
     Links:{
         type:JSON
@@ -37,10 +38,11 @@ const nurseApps = new Schema({
         type:Location,
     },
     UserApp:{
-        type:Schema.ObjectId,
+        type: Schema.Types.ObjectId,
+        ref: "userApps"
         // Where the nurse worked for a particular User's application 
     },
 });
 
 
-module.exports = mongoose.model("nurseApps", nurseApps);
+module.exports = mongoose.model("nurseApps", nurseAppsSchema);

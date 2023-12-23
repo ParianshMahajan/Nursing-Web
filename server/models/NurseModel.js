@@ -1,8 +1,8 @@
-const { mongoose } = require("mongoose");
+const mongoose = require("mongoose");
 
 
 const Schema = mongoose.Schema;
-const nurses = new Schema({
+const nurseSchema = new Schema({
     ImgUrl: {
         type: String,
     },
@@ -47,7 +47,7 @@ const nurses = new Schema({
         // 3--->UnSkilled;
     },
     Skills:{
-        type:Array
+        type:JSON
     },
     Links:{
         type:JSON
@@ -56,8 +56,20 @@ const nurses = new Schema({
     Price:{
         type:Number,
     },
+    Requests:[{
+        type:JSON
+        // contains UserId, requirements, problem description, Location
+    }],
+    CurrentApplication:{
+        type:Schema.Types.ObjectId,
+        ref:"nurseApps"
+    },
+    IsAvailable:{
+        type:Boolean,
+    },
     PreviousRecords:[{
-        type:Schema.ObjectId,
+        type:Schema.Types.ObjectId,
+        ref:"nurseApps"
     }],
     CurrentLocation:{
         // type:Location,
@@ -78,7 +90,15 @@ const nurses = new Schema({
         // [1-5]
         // Avergae of all the Records
     },
+    Ban:{
+        type:Boolean,
+        default:false,
+    }
+});
+
+nurseSchema.pre('save',function(){
+    this.ConfirmPassword=undefined;
 });
 
 
-module.exports = mongoose.model("nurses", nurses);
+module.exports = mongoose.model("nurse", nurseSchema);

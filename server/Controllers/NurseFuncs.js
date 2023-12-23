@@ -6,21 +6,22 @@ const jwt=require('jsonwebtoken');
 const secret_key=process.env.secret_key;
 
 const { default: getImgurLink } = require('../middlewares/ImgurAPI');
-const UserModel = require('../models/UserModel');
 const NurseModel = require('../models/NurseModel');
-
+const UserModel = require('../models/UserModel');
+const authModel = require('../models/authModel');
+const { sendMail } = require('../middlewares/nodeMailer');
 
 
 
 // SIGNUP
 
-module.exports.createUser= async function createUser(req,res){
+module.exports.createNurse= async function createNurse(req,res){
     try {
         let data=req.body; 
 
         const link = await getImgurLink(data.ImgUrl);
         data.ImgUrl=link;
-        let user=await UserModel.create(data);
+        let nurse=await NurseModel.create(data);
         
         const ip =
         req.headers['x-forwarded-for'] ||
@@ -29,14 +30,14 @@ module.exports.createUser= async function createUser(req,res){
         req.connection.socket.remoteAddress;
 
         const payload={
-          uuid:user._id,
-          Role:'User',
+          uuid:nurse._id,
+          Role:'Nurse',
           IPV4:ip,
         }
 
         const token=jwt.sign(payload,secret_key);
 
-        let auth= await authModel.create({UserID:user._id,Role:"User",SessionID:token,IPV4:ip});
+        let auth= await authModel.create({UserID:nurse._id,Role:"Nurse",SessionID:token,IPV4:ip});
 
         res.json({
             status:true,
@@ -56,29 +57,29 @@ module.exports.createUser= async function createUser(req,res){
 
 // LOGIN
 // OTP generation and mail
-module.exports.UserLogin= async function UserLogin(req,res){
+module.exports.NurseLogin= async function NurseLogin(req,res){
     try {
         let data=req.body;
-        let user=await UserModel.findOne(data.Email);
+        let nurse=await NurseModel.findOne(data.Email);
 
         
-        if(user){
-            if(data.Password===user.Password){
+        if(nurse){
+            if(data.Password===nurse.Password){
                 
                 let otp = parseInt(crypto.randomBytes(3).toString("hex"),16).toString().substring(0, 6);
                 
-                let auth=await authModel.findOne({UserID:user._id});
+                let auth=await authModel.findOne({UserID:nurse._id});
                 
                 if(auth){
                     auth.OTP=otp;
                     await auth.save();
                 }
                 else{
-                    let auth= await authModel.create({UserID:user._id,Role:"User",OTP:otp});
+                    let auth= await authModel.create({UserID:user._id,Role:"Nurse",OTP:otp});
                 }
 
                 //Mailing The OTP to the registered mail
-                sendMail(user.Email,otp);
+                sendMail(nurse.Email,otp);
 
                 res.json({
                     status:true,
@@ -109,15 +110,15 @@ module.exports.UserLogin= async function UserLogin(req,res){
 
 
 //   OTP and JWT generation
-module.exports.UserLoginPart2= async function UserLoginPart2(req,res){
+module.exports.NurseLoginPart2= async function NurseLoginPart2(req,res){
     try {
         let data=req.body;
-        let user=await UserModel.findOne(data.Email);
+        let nurse=await NurseModel.findOne(data.Email);
         
-        if(user){
-            if(data.Password===user.Password){
+        if(nurse){
+            if(data.Password===nurse.Password){
                 
-                let auth=await authModel.findOne({UserID:user._id});
+                let auth=await authModel.findOne({UserID:nurse._id});
                 
                 if(auth.OTP===data.OTP){
 
@@ -128,8 +129,8 @@ module.exports.UserLoginPart2= async function UserLoginPart2(req,res){
                     req.connection.socket.remoteAddress;
                     
                     const payload={
-                        uuid:user._id,
-                        Role:"User",
+                        uuid:nurse._id,
+                        Role:"Nurse",
                         IPV4:ip,
                     }
                     const token=jwt.sign(payload,secret_key);
@@ -219,53 +220,48 @@ module.exports.Requests= async function Requests(req,res){
 
 
 
-// primary Filter ::- On the basis of City
-module.exports.sendNurses= async function sendNurses(req,res){
+
+// Accept Requests
+module.exports.acceptRequest= async function acceptRequest(req,res){
     try {
-        let data=req.body;
-        let city=data.city;
-        let nurses= await NurseModel.find({City:city})
+        let nurse=res.nurse;
+
+        // let request={
+        //     UserId:user._id,
+        //     Reason:data.Reason,
+        //     Requirements:data.Requirements,
+        // }                
+
+        let requests=[];
+
+        for(let i in nurse.Requests){
+            let request=nurse.Requests[i];
+            let user=await UserModel.findById(request.UserId);
+            request={...request,
+                    ImgUrl:user.ImgUrl,
+                    Name:user.Name,
+                    Email:user.Email,
+                    PhoneNumber:user.PhoneNumber ,
+                    Address:user.Address,
+            };
+            requests.push(request);
+        }
+
 
         res.json({
             status:true,
-            Nurses:nurses
-        }); 
+            Requests:requests,
+        });
+        
     } catch (error) {
         res.json({
-            status:false,
-            message:error.message
+            message:error.message,
+            status:false
         })
     }
-}   
-
-
-
-
-
-// Send Request to a nurse
-module.exports.sendRequest= async function sendRequest(req,res){
-    try{
-        let data=req.body;
-        let user=res.user;
-        let request={
-            UserId:user._id,
-            Reason:data.Reason,
-            Requirements:data.Requirements,
-            Location:data.Location
-        }                
-        let nurse=await NurseModel.findById(data.nurseId);
-        nurse.Requests.push(request);
-        res.jsom({
-            message:"Request Sent",
-            status:true
-        })
-    }
-    catch(err){
-        res.json({
-            message:err.message
-        })
-    }
+        
 }
+
 
 
 

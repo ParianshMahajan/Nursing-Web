@@ -1,4 +1,4 @@
-const { mongoose } = require("mongoose");
+const mongoose  = require("mongoose");
 var validator = require("email-validator");
 require('dotenv').config();
 
@@ -33,13 +33,11 @@ const usersSchema = new Schema({
         }
     },
     PhoneNumber: {
-        type: Number
-    },
-    Price:{
-        type:Number,
+        type: Number    
     },
     PreviousRecords:[{
-        type:Schema.ObjectId,
+        type:Schema.Types.ObjectId,
+        ref:"userApps"
     }],
     CurrentLocation:{
         // type:Location,
@@ -47,10 +45,14 @@ const usersSchema = new Schema({
     Address:{
         type:String, 
     },
-    IsReport:{
-        type:Boolean,
+    Report:{
+        type:String,
         // Report on any kind of misbhave of user with nurse
     },
+    Ban:{
+        type:Boolean,
+        default:false,
+    }
 });
 
     
