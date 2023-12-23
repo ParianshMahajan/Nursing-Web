@@ -4,10 +4,12 @@ import Navbar from '../Components/Navbar/Navbar'
 import Searchbar from '../Components/Searchbar/Searchbar'
 
 import { FaStar } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 export default function Search() {
 
     let [searchres, getsearchres] = useState([])
+    let navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         Skilled: '0',
@@ -38,7 +40,7 @@ export default function Search() {
     };
 
     useEffect(()=>{
-
+        const queryParams = new URLSearchParams(formData).toString();
         fetch(`http://localhost:8000/search?${queryParams}`).then((response) => response.json())
             .then((data) => {
                 getsearchres(data);
@@ -46,8 +48,13 @@ export default function Search() {
             .catch((error) => {
                 console.error('Error:', error);
             });
-            
+
     }, []);
+
+    const redirector = async (e) => {
+        const url = "/nurse/" + e.target.id;
+        navigate(url);
+    }
 
     return (
         <div>
@@ -87,7 +94,7 @@ export default function Search() {
                     {
                         searchres.length!=0?
                         searchres.map((result) => (
-                            <div className="searchResult">
+                            <div className="searchResult" id={result._id} onMouseDown={redirector}>
                                 <div className="searchResultLeft">
                                     <h3>{result.Name}</h3>
                                     <p>{result.City} | {result.State}</p>
@@ -103,6 +110,7 @@ export default function Search() {
                                 </div>
                             </div>
                         )):
+
                         <h1>No Result Found</h1>
                     }
                 </div>
