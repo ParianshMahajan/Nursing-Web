@@ -110,18 +110,17 @@ export default function ProfileInput() {
 
           <div className="profileRow">
             <div className="formGroup">
-              <label htmlFor="">Skills</label>
+              <label htmlFor="">University Name</label>
               <input type="text" />
             </div>
           </div>
 
+
           <div className="profileRow">
             <div className="formGroup">
-              <label htmlFor="">Skills</label>
-              <input type="text" />
+              <button className='button'>Submit</button>
             </div>
           </div>
-          
 
         </div>
     </div>
