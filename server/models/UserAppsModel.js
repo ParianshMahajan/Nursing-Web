@@ -20,13 +20,13 @@ const UserAppsSchema = new Schema({
     },
 
     Location:{
-
+        // type:Location
     },
     Address:{
-
+        type:String
     },
     City:{
-
+        type:String
     },
 
     Amount:{
@@ -34,11 +34,9 @@ const UserAppsSchema = new Schema({
     },
     ApplicationStatus:{
         type:Number,
-        // 0--> for the Request
-        // 1--> Request Accepted
-        // 2--> Initial/Complete Amount Paid   ||  Session Initiated
-        // 3--> Term Completed
-        // 4--> Paid Successfully
+        // 0--> Initial/Complete Amount Paid   ||  Session Initiated
+        // 1--> Term Completed
+        // 2--> Paid Successfully
     },
     AmountPaid:{
         type:Number,

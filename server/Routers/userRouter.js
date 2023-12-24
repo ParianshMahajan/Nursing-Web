@@ -4,36 +4,9 @@ const app=express();
 const userRouter=express.Router();
 
 // not loggedIn then /newuser 
-userRouter
-.route('/create')
-.post(createUser)
-
-
-
-//if some changes done while applying they will automatically merged in user profile
-userRouter
-.route('/apply')
-.post(verify,apply)
-
-
-
-
-
-
-
-
-//test
-userRouter
-.route('/test')
-.get(test)
-
-
-
-
-
-
-
-
+// userRouter
+// .route('/create')
+// .get(test)
 
 
 module.exports=userRouter;

@@ -10,6 +10,7 @@ const NurseModel = require('../models/NurseModel');
 const UserModel = require('../models/UserModel');
 const authModel = require('../models/authModel');
 const { sendMail } = require('../middlewares/nodeMailer');
+const RequestModel = require('../models/RequestModel');
 
 
 
@@ -189,7 +190,9 @@ module.exports.Requests= async function Requests(req,res){
         let requests=[];
 
         for(let i in nurse.Requests){
-            let request=nurse.Requests[i];
+            let requestId=nurse.Requests[i];
+            let request=await RequestModel.findById(requestId);
+
             let user=await UserModel.findById(request.UserId);
             request={...request,
                     ImgUrl:user.ImgUrl,
@@ -221,36 +224,76 @@ module.exports.Requests= async function Requests(req,res){
 
 
 
-// Accept Requests
-module.exports.acceptRequest= async function acceptRequest(req,res){
+// Decline Requests
+module.exports.declineRequest= async function declineRequest(req,res){
     try {
-        let nurse=res.nurse;
+        let data=req.body;
+        let request =await RequestModel.findById(data.requestID);
 
-        // let request={
-        //     UserId:user._id,
-        //     Reason:data.Reason,
-        //     Requirements:data.Requirements,
-        // }                
-
-        let requests=[];
-
-        for(let i in nurse.Requests){
-            let request=nurse.Requests[i];
-            let user=await UserModel.findById(request.UserId);
-            request={...request,
-                    ImgUrl:user.ImgUrl,
-                    Name:user.Name,
-                    Email:user.Email,
-                    PhoneNumber:user.PhoneNumber ,
-                    Address:user.Address,
-            };
-            requests.push(request);
-        }
+        request.Status=2;
+        await request.save();
 
 
         res.json({
             status:true,
-            Requests:requests,
+            message:'Request Declined'
+        });
+        
+    } catch (error) {
+        res.json({
+            message:error.message,
+            status:false
+        })
+    }
+        
+}
+
+
+
+
+
+// Negotiate Requests
+module.exports.negotiateRequest= async function negotiateRequest(req,res){
+    try {
+        let data=req.body;
+        let request =await RequestModel.findById(data.requestID);
+
+        request.Status=3;
+        request.Amount=data.Amount,
+        request.Duration=data.Duration,
+        await request.save();
+
+
+        res.json({
+            status:true,
+            message:'Request Accepted'
+        });
+        
+    } catch (error) {
+        res.json({
+            message:error.message,
+            status:false
+        })
+    }
+        
+}
+
+
+
+
+// Accept Requests
+module.exports.acceptRequest= async function acceptRequest(req,res){
+    try {
+        let data=req.body;
+        let request =await RequestModel.findById(data.requestID);
+
+        request.Status=true;
+        await request.save();
+
+
+        res.json({
+            status:true,
+            message:'Request Accepted'
         });
         
     } catch (error) {

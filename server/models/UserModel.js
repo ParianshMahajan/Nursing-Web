@@ -39,6 +39,9 @@ const usersSchema = new Schema({
         type:Schema.Types.ObjectId,
         ref:"userApps"
     }],
+    RequestSent:[{
+        type:JSON
+    }],
     CurrentLocation:{
         // type:Location,
     },
