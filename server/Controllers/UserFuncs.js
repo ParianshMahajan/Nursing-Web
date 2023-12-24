@@ -9,6 +9,9 @@ const { default: getImgurLink } = require('../middlewares/ImgurAPI');
 const UserModel = require('../models/UserModel');
 const NurseModel = require('../models/NurseModel');
 const RequestModel = require('../models/RequestModel');
+const NurseAppsModel = require('../models/NurseAppsModel');
+const UserAppsModel = require('../models/UserAppsModel');
+const testSchema = require('../models/testSchema');
 
 
 
@@ -182,81 +185,103 @@ module.exports.UserLoginPart2= async function UserLoginPart2(req,res){
   
   
   
-  // Send Request to a nurse
-  module.exports.sendRequest= async function sendRequest(req,res){
-      try{
-          let data=req.body;
-          let user=res.user;
-          let requestData={
-              UserId:user._id,
-              NurseId:data.nurseId,
-              Reason:data.Reason,
-              Requirements:data.Requirements,
-              Location:data.Location,
-              Status:false,
-          }
-          let request=await RequestModel.create(requestData);
-          user.RequestSent.push(request._id);
-          let nurse=await NurseModel.findById(data.nurseId);
-          nurse.Requests.push(request._id);
-          res.jsom({
-              message:"Request Sent",
-              status:true
-          })
-      }
-      catch(err){
-          res.json({
-              message:err.message
-          })
-      }
-  }
-  
-  
-  
+// Send Request to a nurse
+module.exports.sendRequest= async function sendRequest(req,res){
+    try{
+        let data=req.body;
+        let user=res.user;
+        let requestData={
+            UserId:user._id,
+            NurseId:data.nurseId,
+            Reason:data.Reason,
+            Requirements:data.Requirements,
+            Location:data.Location,
+            City:data.City,
+            Status:0,
+            Duration:data.Duration,
+            Amount:data.Amount,
+        }
+        let request=await RequestModel.create(requestData);
+        user.RequestSent.push(request._id);
+        let nurse=await NurseModel.findById(data.nurseId);
+        nurse.Requests.push(request._id);
+        res.json({
+            message:"Request Sent",
+            status:true
+        })
+    }
+    catch(err){
+        res.json({
+            message:err.message
+        })
+    }
+}
 
 
-  
-  
-  
-  // Fetch Requests
-  module.exports.AllRequests= async function AllRequests(req,res){
-      try {
-          let user=res.user;
-          let requests=[];
-          for(let i in user.Requests){
-              let requestId=user.Requests[i];
-              let request=await RequestModel.findById(requestId);
-  
-              let nurse=await NurseModel.findById(request.UserId);
-              request={...request,
-                      ImgUrl:nurse.ImgUrl,
-                      Name:nurse.Name,
-                      Email:nurse.Email,
-                      PhoneNumber:nurse.PhoneNumber ,
-                      Address:nurse.Address,
-              };
-              requests.push(request);
-          }
-  
-  
-          res.json({
-              status:true,
-              Requests:requests,
-          });
-          
-      } catch (error) {
-          res.json({
-              message:error.message,
-              status:false
-          })
-      }
-          
-  }
-  
+
+// Negotiate Request to a nurse
+module.exports.negotiateRequest= async function negotiateRequest(req,res){
+    try{
+        let data=req.body;
+        let user=res.user;
+        let request=await RequestModel.findById(data.requestID);
+        
+        request.Status=3,
+        request.Amount=data.Amount,
+        request.Duration=data.Duration,
+        
+        await request.save();
+        res.json({
+            message:"Request Negotiatation Sent",
+            status:true
+        })
+    }
+    catch(err){
+        res.json({
+            message:err.message
+        })
+    }
+}
 
 
 
 
+
+
+// Fetch Requests
+module.exports.AllRequests= async function AllRequests(req,res){
+    try {
+        let user=res.user;
+        let requests=[];
+        for(let i in user.Requests){
+            let requestId=user.Requests[i];
+            let request=await RequestModel.findById(requestId);
+
+            let nurse=await NurseModel.findById(request.UserId);
+            request={...request,
+                    ImgUrl:nurse.ImgUrl,
+                    Name:nurse.Name,
+                    Email:nurse.Email,
+                    PhoneNumber:nurse.PhoneNumber ,
+                    Address:nurse.Address,
+            };
+            requests.push(request);
+        }
+
+
+        res.json({
+            status:true,
+            Requests:requests,
+        });
+        
+    } catch (error) {
+        res.json({
+            message:error.message,
+            status:false
+        })
+    }
+        
+}
 
 
   
@@ -265,13 +290,19 @@ module.exports.UserLoginPart2= async function UserLoginPart2(req,res){
 module.exports.initialPay= async function initialPay(req,res){
     try {
         let data=req.body;
-        let user=res.user;
+        // Containing the request ID
 
         let payment=false;
         
+        let user=res.user;
+        let request=await RequestModel.findById(data.requestID);
         let nurse=await NurseModel.findById(data.nurseID);
-        nurse.IsAvailable=false;
 
+        // Calculating amount to be paid
+        let amount=request.Amount;
+
+
+        nurse.IsAvailable=false;
         await nurse.save();
 
         //
@@ -280,8 +311,51 @@ module.exports.initialPay= async function initialPay(req,res){
         
         // 
         if(payment){
-            user.RequestSent=[];
-            await user.save();
+
+            // Creating NurseApplication
+            let nurseAppData={
+                NurseID:nurse._id,
+                Skilled:nurse.Skilled,
+                Skills:nurse.Skills,
+                Links:nurse.Links,
+                Amount:request.Amount,
+                IsPaid:false,
+                AmountPaid:amount,
+                Review:{},
+                Duration:request.Duration,
+                UserApp:'',
+            }
+            let nurseApp=await NurseAppsModel.create(nurseAppData)
+
+            // creating UserApplication.
+            let userAppData={
+                UserId:user._id,
+                Reason:request.Reason,
+                Requirements:request.Requirements,
+                Report:'',
+                Location:request.Location,
+                Address:user.Address,
+                City:request.City,
+                Amount:request.Amount,
+                ApplicationStatus:0,
+                AmountPaid:amount,
+                NurseApp:nurseApp._id,
+            }
+            let userApp=await UserAppsModel.create(userAppData)
+
+            nurseApp.UserApp=userApp._id;
+            await nurseApp.save();
+
+
+
+
+
+            let duration=(request.Duration)*24*60*60*60*1000;
+
+            setInterval(async () => {
+                userApp.ApplicationStatus = 1;
+                await userApp.save();
+            }, duration);
 
             res.json({
                 status:true,
@@ -351,14 +425,18 @@ module.exports.initialPay= async function initialPay(req,res){
 // module.exports.test= async function test(req,res){
 //     try {
         
-//         let data={
-//             test:[{message:"hello"}]
-//         }
-//         let testing=await testModel.create(data);
+//         let data = {
+//             Test: 2
+//         };
+        
+//         let testing = await testSchema.create(data);
 //         console.log(testing);
-//         testing.test.push({message:"hi"});
-//         testing.test.push({message:"hiii"});
-//         await testing.save();
+        
+//         setInterval(async () => {
+//             testing.Test = 10;
+//             await testing.save();
+//         }, 12000);
+        
 //         res.json({
 //             status:true,
 //         });

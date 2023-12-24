@@ -35,7 +35,7 @@ const nurseAppsSchema = new Schema({
         // [string Review, Hospitality Rating, Work Rating......]
     },
     Duration:{
-        type:Location,
+        type:Number,
     },
     UserApp:{
         type: Schema.Types.ObjectId,

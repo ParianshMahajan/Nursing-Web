@@ -18,11 +18,25 @@ const RequestSchema = new Schema({
         type:JSON
     },
     Location:{
-        type:Location,
+        // type:location,
+    },
+    City:{
+        type:String,
     },
     Status:{
-        type:Boolean,
-        default:false
+        type:Number,
+        default:0,
+        // 0 ---> Request Sent
+        // 1 ---> Request Accepted
+        // 2 ---> Request Declined
+        // 3 ---> Request Negotiated
+    },
+    Amount:{
+        type:Number,
+    },
+    Duration:{
+        type:Number,
+        // no. of Days
     },
 });
 

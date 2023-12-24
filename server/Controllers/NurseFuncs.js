@@ -224,6 +224,63 @@ module.exports.Requests= async function Requests(req,res){
 
 
 
+// Decline Requests
+module.exports.declineRequest= async function declineRequest(req,res){
+    try {
+        let data=req.body;
+        let request =await RequestModel.findById(data.requestID);
+
+        request.Status=2;
+        await request.save();
+
+
+        res.json({
+            status:true,
+            message:'Request Declined'
+        });
+        
+    } catch (error) {
+        res.json({
+            message:error.message,
+            status:false
+        })
+    }
+        
+}
+
+
+
+
+
+// Negotiate Requests
+module.exports.negotiateRequest= async function negotiateRequest(req,res){
+    try {
+        let data=req.body;
+        let request =await RequestModel.findById(data.requestID);
+
+        request.Status=3;
+        request.Amount=data.Amount,
+        request.Duration=data.Duration,
+        await request.save();
+
+
+        res.json({
+            status:true,
+            message:'Request Accepted'
+        });
+        
+    } catch (error) {
+        res.json({
+            message:error.message,
+            status:false
+        })
+    }
+        
+}
+
+
+
+
 // Accept Requests
 module.exports.acceptRequest= async function acceptRequest(req,res){
     try {

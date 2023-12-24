@@ -3,10 +3,10 @@ const { apply, sendData, createUser, updateProfile, pastApp, changeSlot, test, s
 const app=express();
 const userRouter=express.Router();
 
-// // not loggedIn then /newuser 
+// not loggedIn then /newuser 
 // userRouter
 // .route('/create')
-// .post(createUser)
+// .get(test)
 
 
 module.exports=userRouter;
