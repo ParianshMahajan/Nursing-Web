@@ -7,6 +7,7 @@ import NurseProfile from './Pages/NurseProfile/NurseProfile';
 import Login from './Pages/Login/Login';
 import SignUp from './Pages/SignUp/SignUp';
 import ProfileInput from './Pages/SignUp/NurseProfileInput';
+import Location from './Pages/Components/Location/Location';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/login" element={<Login/>}></Route>
           <Route path="/signup" element={<SignUp/>}></Route>
           <Route path="/pi" element={<ProfileInput/>}></Route>
+          <Route path="/location" element={<Location/>}></Route>
         </Routes>
       </BrowserRouter>
     </>

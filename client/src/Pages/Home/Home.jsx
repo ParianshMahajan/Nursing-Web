@@ -17,7 +17,6 @@ export default function Home() {
             Starts at just 10$, Exclusively on our mobile app
           </p>
         </div>
-
         <div className="homeSearchCont">
           <Searchbar width="60"/>
         </div>
