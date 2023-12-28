@@ -310,3 +310,32 @@ module.exports.acceptRequest= async function acceptRequest(req,res){
 
 
 
+
+// Accept Requests
+module.exports.ReportUser= async function ReportUser(req,res){
+    try {
+        let data=req.body;
+        let user =await UserModel.findById(data.userID);
+
+        user.Report=data.Report;
+        await user.save();
+
+        res.json({
+            status:true,
+            message:'Report Submitted'
+        });
+        
+    } catch (error) {
+        res.json({
+            message:error.message,
+            status:false
+        })
+    }
+        
+}
+
+
+
+
+
+

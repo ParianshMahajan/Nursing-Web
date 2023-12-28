@@ -25,9 +25,17 @@ module.exports.isNurse= async function isNurse(req,res,next){
                 
                 if(payload){
                     if(payload.Role=="Nurse"){
-                        let nurse= await NurseModel.findById(payload.uuid);              
-                        res.nurse=nurse;
-                        next();
+                        let nurse= await NurseModel.findById(payload.uuid);
+                        if(nurse.Ban==false){
+                            res.nurse=nurse;
+                            next();
+                        }
+                        else{
+                            res.json({
+                                status:false,
+                                message:"Blocked by the Admin."
+                            });
+                        }              
                     }
                     else{
                         res.json({

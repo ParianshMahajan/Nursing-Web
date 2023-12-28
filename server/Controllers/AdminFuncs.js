@@ -104,3 +104,37 @@ module.exports.PayNurse= async function PayNurse(req,res){
         
 }
 
+
+
+
+
+
+// Ban
+module.exports.Ban = async function Ban(req, res) {
+    try {
+        let data=req.body;
+        let nurse=await NurseModel.findById(data.clientId);
+        if(nurse){
+            nurse.Ban=true;
+            await nurse.save();
+        }
+        else{
+            let user=await UserModel.findById(data.clientId);
+            user.Ban=true;
+            await user.save();
+        }
+        
+        res.json({
+          status: true,
+          message: "Client Blocked",
+        });
+  
+    } catch (error) {
+      res.json({
+        message: error.message,
+        status: false,
+      });
+    }
+  };
+  
+  

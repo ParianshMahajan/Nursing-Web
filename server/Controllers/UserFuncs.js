@@ -4,6 +4,13 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 const jwt=require('jsonwebtoken');
 const secret_key=process.env.secret_key;
+const cron = require('node-cron');
+
+
+
+
+
+
 
 const { default: getImgurLink } = require('../middlewares/ImgurAPI');
 const UserModel = require('../models/UserModel');
@@ -362,9 +369,8 @@ module.exports.initialPay= async function initialPay(req,res){
 
 
 
-            let duration=(request.Duration)*24*60*60*60*1000;
-
-            setInterval(async () => {
+            const cronExpression = `0 1 */${request.Duration} * *`;
+            cron.schedule(cronExpression, async () => {
 
                 userApp.ApplicationStatus = 1;
                 await userApp.save();
@@ -374,10 +380,13 @@ module.exports.initialPay= async function initialPay(req,res){
                 nurse.CurrentApplication='';
                 nurse.PreviousRecords.push(nurseApp._id);
                 await nurse.save();
-           
-            }, duration);
 
+            }, {
+              scheduled: true,
+              timezone: "Asia/Kolkata"
+            });
 
+            
             // Deleting Request
             let request=await RequestModel.findById(data.requestID);
             await request.deleteOne();

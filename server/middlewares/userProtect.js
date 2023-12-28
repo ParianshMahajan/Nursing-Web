@@ -25,9 +25,17 @@ module.exports.isUser= async function isUser(req,res,next){
                 
                 if(payload){
                     if(payload.Role=="User"){
-                        let user= await UserModel.findById(payload.uuid);              
-                        res.user=user;
-                        next();
+                        let user= await UserModel.findById(payload.uuid);      
+                        if(user.Ban==false){
+                            res.user=user;
+                            next();
+                        }
+                        else{
+                            res.json({
+                                status:false,
+                                message:"Blocked by the Admin."
+                            });
+                        }
                     }
                     else{
                         res.json({
