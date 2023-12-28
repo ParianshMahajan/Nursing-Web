@@ -30,12 +30,19 @@ const nurseAppsSchema = new Schema({
         type:Number,
         // In case of any deduction
     },
+    Rating:{
+        type:Number, 
+    },
     Review:{
         type:JSON, 
         // [string Review, Hospitality Rating, Work Rating......]
     },
     Duration:{
         type:Number,
+    },
+    TermCompleted:{
+        type:Boolean,
+        default:false,
     },
     UserApp:{
         type: Schema.Types.ObjectId,

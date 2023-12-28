@@ -11,7 +11,6 @@ const NurseModel = require('../models/NurseModel');
 const RequestModel = require('../models/RequestModel');
 const NurseAppsModel = require('../models/NurseAppsModel');
 const UserAppsModel = require('../models/UserAppsModel');
-const testSchema = require('../models/testSchema');
 
 
 
@@ -310,7 +309,9 @@ module.exports.initialPay= async function initialPay(req,res){
         // <--------Payment Code------->
         
         // 
+        
         if(payment){
+            
 
             // Creating NurseApplication
             let nurseAppData={
@@ -348,14 +349,108 @@ module.exports.initialPay= async function initialPay(req,res){
 
 
 
+            let index1 = nurse.Requests.indexOf(request._id);
+            nurse.Requests.splice(index1, 1);
+            nurse.CurrentApplication=nurseApp._id;
+            await nurse.save();
+
+            let index2 = user.RequestSent.indexOf(request._id);
+            user.RequestSent.splice(index2, 1);
+            user.CurrentContracts.nurseContracts.push(userApp._id);
+            await user.save();
+
+
 
 
             let duration=(request.Duration)*24*60*60*60*1000;
 
             setInterval(async () => {
+
                 userApp.ApplicationStatus = 1;
                 await userApp.save();
+                
+                
+                nurse.IsAvailable = true;
+                nurse.CurrentApplication='';
+                nurse.PreviousRecords.push(nurseApp._id);
+                await nurse.save();
+           
             }, duration);
+
+
+            // Deleting Request
+            let request=await RequestModel.findById(data.requestID);
+            await request.deleteOne();
+
+            user.CurrentContracts.nurseContracts.push(userApp._id);
+            await user.save();
+
+            res.json({
+                status:true,
+            });
+        }
+        else{
+            nurse.IsAvailable=true;
+            await nurse.save();
+            res.json({
+                status:false,
+            });
+        }
+        
+    } catch (error) {
+        res.json({
+            message:error.message,
+            status:false
+        })
+    }
+        
+}
+
+
+
+
+
+
+
+
+
+
+
+// Final Pay
+
+module.exports.finalPay= async function finalPay(req,res){
+    try {
+        let data=req.body;
+        
+        let payment=false;
+        
+        let user=res.user;
+
+        // Calculating amount to be paid
+        let amount=request.Amount;
+        
+
+
+        //
+        
+        // <--------Payment Code------->
+        
+        // 
+        
+        if(payment){
+            let nurseApp=await NurseAppsModel.findById(data.nurseAppId);
+            let userApp=await UserAppsModel.findById(nurseApp.UserApp);
+
+            userApp.ApplicationStatus=2;
+            userApp.AmountPaid=userApp.Amount;
+            await userApp.save();
+
+            // removing userApp from currentContracts
+            let index=user.CurrentContracts.nurseContracts.indexOf(userApp._id);
+            user.CurrentContracts.nurseContracts.splice(index,1);
+
+            user.PreviousRecords.nurseContracts.push(userApp._id);
+            await user.save();
 
             res.json({
                 status:true,
@@ -369,9 +464,6 @@ module.exports.initialPay= async function initialPay(req,res){
                 status:false,
             });
         }
-
-        
-        
         
     } catch (error) {
         res.json({
@@ -393,60 +485,119 @@ module.exports.initialPay= async function initialPay(req,res){
 
 
 
+// Radius Filter
+module.exports.sendNurses= async function sendNurses(req,res){
+    try {
+        let data=req.body;
+        let currLocation=data.currLocation; // A json object eg. currLocation.latitude
+        let radius=data.radius;
+
+        const nurses = await NurseModel.find({
+          $expr: {
+            $lte: [
+              {
+                $function: {
+                  body: function (lat1, lon1, lat2, lon2) {
+                    const R = 6371e3; // Earth's radius in meters
+                    const dLat = deg2rad(lat2 - lat1);
+                    const dLon = deg2rad(lon2 - lon1);
+                    const a =
+                      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(deg2rad(lat1)) *
+                        Math.cos(deg2rad(lat2)) *
+                        Math.sin(dLon / 2) *
+                        Math.sin(dLon / 2);
+                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                    const distance = R * c; // Distance in meters
+                    return distance/1000;
+                  },
+                  args: ["$location.latitude", "$location.longitude", currLocation.latitude, currLocation.longitude],
+                  lang: "js",
+                },
+              },
+              radius,
+            ],
+          },
+        });
+        
+        function deg2rad(deg) {
+          return deg * (Math.PI / 180);
+        }
+
+
+        res.json({
+            status:true,
+            Nurses:nurses
+        });     
+    } catch (error) {
+        res.json({
+            status:false,
+            message:error.message
+        })    
+    }    
+}       
+
+
+
+
+
 
 
   
   
 
 
+module.exports.Ratings= async function Ratings(req,res){
+    try {
+        let data=req.body;
+        let nurseApp=await NurseAppsModel.findById(data.nurseAppId);
 
+        nurseApp.Rating=data.Rating;
+        nurseApp.Review=data.Review;
 
+        await nurseApp.save();
 
-// // primary Filter ::- On the basis of City  
-// module.exports.sendNurses= async function sendNurses(req,res){
-//     try {
-//         let data=req.body;
-//         let city=data.city;
-//         let nurses= await NurseModel.find({City:city})
-
-//         res.json({
-//             status:true,
-//             Nurses:nurses
-//         });     
-//     } catch (error) {
-//         res.json({
-//             status:false,
-//             message:error.message
-//         })    
-//     }    
-// }       
-
-
-// module.exports.test= async function test(req,res){
-//     try {
+        let nurse=await NurseModel.findById(nurseApp.NurseId);
+        // Taking Average
+        nurse.Rating=(((nurse.Rating)*((nurse.PreviousRecords.length)-1))+data.Rating)/nurse.PreviousRecords.length;
         
-//         let data = {
-//             Test: 2
-//         };
+        await nurse.save();
+
+
+        res.json({
+            message:"Test"
+        })
+    
         
-//         let testing = await testSchema.create(data);
-//         console.log(testing);
+    } catch (error) {
+        res.json({
+            message:error.message,
+            status:false
+        })
+    }
+}
+
+
+
+
+  
+  
+
+
+module.exports.test= async function test(req,res){
+    try {
         
-//         setInterval(async () => {
-//             testing.Test = 10;
-//             await testing.save();
-//         }, 12000);
+        res.json({
+            message:"Test"
+        })
+    
         
-//         res.json({
-//             status:true,
-//         });
-        
-//     } catch (error) {
-//         res.json({
-//             message:error.message,
-//             status:false
-//         })
-//     }
-// }
+    } catch (error) {
+        res.json({
+            message:error.message,
+            status:false
+        })
+    }
+}
 
 

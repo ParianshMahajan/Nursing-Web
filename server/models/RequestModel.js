@@ -18,7 +18,7 @@ const RequestSchema = new Schema({
         type:JSON
     },
     Location:{
-        // type:location,
+        type:JSON,
     },
     City:{
         type:String,

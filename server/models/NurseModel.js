@@ -57,8 +57,8 @@ const nurseSchema = new Schema({
         type:Number,
     },
     Requests:[{
-        type:JSON
-        // contains UserId, requirements, problem description, Location
+        type:Schema.Types.ObjectId,
+        ref:"Requests"
     }],
     CurrentApplication:{
         type:Schema.Types.ObjectId,
@@ -72,7 +72,7 @@ const nurseSchema = new Schema({
         ref:"nurseApps"
     }],
     CurrentLocation:{
-        // type:Location,
+        type:JSON,
     },
 
     Address:{
@@ -85,8 +85,9 @@ const nurseSchema = new Schema({
         type:String, 
     },
 
-    Ratings:{
+    Rating:{
         type:Number,
+        default:0
         // [1-5]
         // Avergae of all the Records
     },

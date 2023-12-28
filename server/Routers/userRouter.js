@@ -4,9 +4,9 @@ const app=express();
 const userRouter=express.Router();
 
 // not loggedIn then /newuser 
-// userRouter
-// .route('/create')
-// .get(test)
+userRouter
+.route('/test')
+.get(test)
 
 
 module.exports=userRouter;

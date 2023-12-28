@@ -35,15 +35,28 @@ const usersSchema = new Schema({
     PhoneNumber: {
         type: Number    
     },
-    PreviousRecords:[{
-        type:Schema.Types.ObjectId,
-        ref:"userApps"
-    }],
-    RequestSent:[{
+    PreviousRecords:{
         type:JSON
+        // format
+        // {
+        //     nurseContracts:[objectIDs],
+        //     homeContracts:[objectIDs],
+        // }
+    },
+    RequestSent:[{
+        type:Schema.Types.ObjectId,
+        ref:"Requests"
     }],
     CurrentLocation:{
-        // type:Location,
+        type:JSON,
+    },
+    CurrentContracts:{
+        type:JSON
+        // format
+        // {
+        //     nurseContracts:[objectIDs],
+        //     homeContracts:[objectIDs],
+        // }
     },
     Address:{
         type:String, 

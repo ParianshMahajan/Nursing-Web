@@ -20,7 +20,7 @@ const UserAppsSchema = new Schema({
     },
 
     Location:{
-        // type:Location
+        type:JSON,
     },
     Address:{
         type:String
@@ -45,6 +45,11 @@ const UserAppsSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "nurseApps"
         // Application of Nurse they hired  
+    },
+    homeApp:{
+        type: Schema.Types.ObjectId,
+        // ref: "nurseApps"
+        // Application of Home they rented  
     },
 });
 
