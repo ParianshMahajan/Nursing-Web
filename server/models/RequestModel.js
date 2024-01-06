@@ -3,9 +3,8 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 const RequestSchema = new Schema({
-    NurseId: {
+    RecieverId: {
         type: Schema.Types.ObjectId,
-        ref: "nurse"      
     },
     UserId: {
         type: Schema.Types.ObjectId,

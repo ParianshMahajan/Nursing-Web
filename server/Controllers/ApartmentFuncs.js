@@ -11,18 +11,28 @@ const UserModel = require('../models/UserModel');
 const authModel = require('../models/authModel');
 const { sendMail } = require('../middlewares/nodeMailer');
 const RequestModel = require('../models/RequestModel');
+const ApartmentModel = require('../models/ApartmentModel');
 
 
 
 // SIGNUP
 
-module.exports.createNurse= async function createNurse(req,res){
+module.exports.createApartment= async function createApartment(req,res){
     try {
         let data=req.body; 
 
         const link = await getImgurLink(data.ImgUrl);
         data.ImgUrl=link;
-        let nurse=await NurseModel.create(data);
+
+        // generating imgur links of apartment images
+        let extImgs=[];
+        for(let i=0;i<data.ApartmentImages.length;i++){
+            let templ=await getImgurLink(data.ApartmentImages[i]);
+            extImgs.push(templ);
+        }
+        data.ApartmentImages=extImgs;
+
+        let apartment=await ApartmentModel.create(data);
         
         const ip =
         req.headers['x-forwarded-for'] ||
@@ -31,14 +41,14 @@ module.exports.createNurse= async function createNurse(req,res){
         req.connection.socket.remoteAddress;
 
         const payload={
-          uuid:nurse._id,
-          Role:'Nurse',
+          uuid:apartment._id,
+          Role:'Apartment',
           IPV4:ip,
         }
 
         const token=jwt.sign(payload,secret_key);
 
-        let auth= await authModel.create({UserID:nurse._id,Role:"Nurse",SessionID:token,IPV4:ip});
+        let auth= await authModel.create({UserID:apartment._id,Role:"Apartment",SessionID:token,IPV4:ip});
 
         res.json({
             status:true,
@@ -58,29 +68,28 @@ module.exports.createNurse= async function createNurse(req,res){
 
 // LOGIN
 // OTP generation and mail
-module.exports.NurseLogin= async function NurseLogin(req,res){
+module.exports.ApartmentLogin= async function ApartmentLogin(req,res){
     try {
         let data=req.body;
-        let nurse=await NurseModel.findOne(data.Email);
-
+        let apartment=await ApartmentModel.findOne(data.Email);
         
-        if(nurse){
-            if(data.Password===nurse.Password){
+        if(apartment){
+            if(data.Password===apartment.Password){
                 
                 let otp = parseInt(crypto.randomBytes(3).toString("hex"),16).toString().substring(0, 6);
                 
-                let auth=await authModel.findOne({UserID:nurse._id});
+                let auth=await authModel.findOne({UserID:apartment._id});
                 
                 if(auth){
                     auth.OTP=otp;
                     await auth.save();
                 }
                 else{
-                    let auth= await authModel.create({UserID:user._id,Role:"Nurse",OTP:otp});
+                    let auth= await authModel.create({UserID:user._id,Role:"Apartment",OTP:otp});
                 }
 
                 //Mailing The OTP to the registered mail
-                sendMail(nurse.Email,otp);
+                sendMail(apartment.Email,otp);
 
                 res.json({
                     status:true,
@@ -111,15 +120,15 @@ module.exports.NurseLogin= async function NurseLogin(req,res){
 
 
 //   OTP and JWT generation
-module.exports.NurseLoginPart2= async function NurseLoginPart2(req,res){
+module.exports.ApartmentLoginPart2= async function ApartmentLoginPart2(req,res){
     try {
         let data=req.body;
-        let nurse=await NurseModel.findOne(data.Email);
+        let apartment=await ApartmentModel.findOne(data.Email);
         
-        if(nurse){
-            if(data.Password===nurse.Password){
+        if(apartment){
+            if(data.Password===apartment.Password){
                 
-                let auth=await authModel.findOne({UserID:nurse._id});
+                let auth=await authModel.findOne({UserID:apartment._id});
                 
                 if(auth.OTP===data.OTP){
 
@@ -130,8 +139,8 @@ module.exports.NurseLoginPart2= async function NurseLoginPart2(req,res){
                     req.connection.socket.remoteAddress;
                     
                     const payload={
-                        uuid:nurse._id,
-                        Role:"Nurse",
+                        uuid:apartment._id,
+                        Role:"Apartment",
                         IPV4:ip,
                     }
                     const token=jwt.sign(payload,secret_key);
@@ -181,43 +190,43 @@ module.exports.NurseLoginPart2= async function NurseLoginPart2(req,res){
 
 
 
-// Fetch Requests
-module.exports.Requests= async function Requests(req,res){
-    try {
-        let nurse=res.nurse;
+// // Fetch Requests
+// module.exports.Requests= async function Requests(req,res){
+//     try {
+//         let nurse=res.nurse;
 
         
-        let requests=[];
+//         let requests=[];
 
-        for(let i in nurse.Requests){
-            let requestId=nurse.Requests[i];
-            let request=await RequestModel.findById(requestId);
+//         for(let i in nurse.Requests){
+//             let requestId=nurse.Requests[i];
+//             let request=await RequestModel.findById(requestId);
 
-            let user=await UserModel.findById(request.UserId);
-            request={...request,
-                    ImgUrl:user.ImgUrl,
-                    Name:user.Name,
-                    Email:user.Email,
-                    PhoneNumber:user.PhoneNumber ,
-                    Address:user.Address,
-            };
-            requests.push(request);
-        }
+//             let user=await UserModel.findById(request.UserId);
+//             request={...request,
+//                     ImgUrl:user.ImgUrl,
+//                     Name:user.Name,
+//                     Email:user.Email,
+//                     PhoneNumber:user.PhoneNumber ,
+//                     Address:user.Address,
+//             };
+//             requests.push(request);
+//         }
 
 
-        res.json({
-            status:true,
-            Requests:requests,
-        });
+//         res.json({
+//             status:true,
+//             Requests:requests,
+//         });
         
-    } catch (error) {
-        res.json({
-            message:error.message,
-            status:false
-        })
-    }
+//     } catch (error) {
+//         res.json({
+//             message:error.message,
+//             status:false
+//         })
+//     }
         
-}
+// }
 
 
 
