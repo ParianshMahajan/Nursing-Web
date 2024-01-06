@@ -340,6 +340,7 @@ module.exports.sendNurses= async function sendNurses(req,res){
         let currLocation=data.currLocation; // A json object eg. currLocation.latitude
         let radius=data.radius;
 
+        
         const nurses = await NurseModel.find({
           $expr: {
             $lte: [
