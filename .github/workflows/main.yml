@@ -3,7 +3,7 @@ name: Push Backend to Hugging Face
 on:
   push:
     paths:
-      - 'backend/**'
+      - 'server/**'
     branches:
       - dev
   workflow_dispatch:  # Allows the workflow to be manually triggered
@@ -23,7 +23,7 @@ jobs:
 
       - name: Initialize and Push to Hugging Face
         run: |
-          cd backend
+          cd server
           git init
           git checkout -b main  # Use 'main' branch; change if needed
           git remote add origin https://huggingface.co/spaces/tapowan/backend
