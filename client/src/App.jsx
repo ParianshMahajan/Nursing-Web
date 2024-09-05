@@ -8,6 +8,7 @@ import Login from './Pages/Login/Login';
 import SignUp from './Pages/SignUp/SignUp';
 import ProfileInput from './Pages/SignUp/NurseProfileInput';
 import Location from './Pages/Components/Location/Location';
+import UserDash from './Pages/Dashboards/UserDashboard/UserDash';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/signup" element={<SignUp/>}></Route>
           <Route path="/pi" element={<ProfileInput/>}></Route>
           <Route path="/location" element={<Location/>}></Route>
+          <Route path="/user/dash" element={<UserDash/>}></Route>
         </Routes>
       </BrowserRouter>
     </>

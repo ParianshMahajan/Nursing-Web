@@ -52,8 +52,9 @@ export default function Search() {
     }, []);
 
     const redirector = async (e) => {
-        const url = "/nurse/" + e.target.id;
-        navigate(url);
+        const url2 = "/nurse/" + e.target.id;
+        console.log(url2);
+        navigate(url2);
     }
 
     return (
@@ -94,7 +95,7 @@ export default function Search() {
                     {
                         searchres.length!=0?
                         searchres.map((result) => (
-                            <div className="searchResult" id={result._id} onMouseDown={redirector}>
+                            <div className="searchResult" onClick={(e)=>redirector(e)} id={result._id} >
                                 <div className="searchResultLeft">
                                     <h3>{result.Name}</h3>
                                     <p>{result.City} | {result.State}</p>

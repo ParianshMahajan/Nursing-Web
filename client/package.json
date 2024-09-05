@@ -10,10 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/free-brands-svg-icons": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "axios": "^1.6.2",
     "country-state-city": "^3.2.1",
+    "fortawesome": "^0.0.1-security",
     "leaflet": "^1.9.4",
     "react": "^18.2.0",
+    "react-cookie": "^7.1.0",
     "react-dom": "^18.2.0",
     "react-geolocation": "^1.0.4",
     "react-icons": "^4.11.0",

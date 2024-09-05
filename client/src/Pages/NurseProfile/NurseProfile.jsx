@@ -13,7 +13,7 @@ export default function NurseProfile() {
 
     useEffect(() => {
 
-        fetch(`http://localhost:8000/nurse/${id}`).then((response) => response.json())
+        fetch(`http://localhost:3001/nurse/${id}`).then((response) => response.json())
             .then((data) => {
                 console.log(data[0]);
                 setNurseData(data[0]);

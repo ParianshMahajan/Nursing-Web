@@ -1,184 +1,224 @@
-.home{
-    height: 150vh;
-    background-color: #BBEBFF;
-    padding: 0 60px;
+  @import url('https://fonts.googleapis.com/css2?family=Oooh+Baby&family=Tiro+Devanagari+Hindi&family=Work+Sans:wght@200;300;400;600;700;800&display=swap');
+
+  .home {
+  height: 150vh;
+  /* background-color: #aad7d9; */
+  background-image: url('./Assets/background.jpeg') ;
+  background-repeat:no-repeat ;
+  background-size: contain;
+  padding: 100px 60px;
 }
 
-.homeHeadings{
+.homeHeadings {
+  width: 100%;
+  padding-top: 100px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  color: #003e58;
+}
+
+.homeHead {
+  font-weight: bold;
+  font-family: 'Tiro Devanagari Hindi', serif;
+  font-size: 105px;
+  letter-spacing: 5px;
+}
+
+.homeTagDown {
+  margin-top: 20px;
+}
+
+.homeSearchCont {
+  display: flex;
+  justify-content: center;
+  align-items: centers;
+  margin-top: 50px;
+}
+
+.homeSelectorCont {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.homeSelector {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+
+  width: 60%;
+  color: #003e58;
+
+  margin-top: 50px;
+}
+
+.homeSelectors {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.homeSelectors:hover > :not(:hover) {
+  opacity: 0.5;
+}
+
+
+.homeVideoSide {
+  height: 120px;
+  width: 220px;
+  border-radius: 5px;
+  background-color: white;
+  position: absolute;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 25px 15px;
+
+  box-shadow: 0 0 50px -25px #003e58;
+}
+
+.sideIcon {
+  height: 100%;
+  width: 50px;
+  margin-right: 10px;
+}
+
+.homeVideoSide > div > * {
+  padding: 0;
+  margin: 0;
+  line-height: normal;
+}
+
+.homeVideoSide > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.leftside {
+  left: 75px;
+  top: 20%;
+}
+
+.righthside {
+  right: 75px;
+  bottom: 20%;
+}
+
+.homeNurseTypes {
+  min-height: 100vh;
+  padding: 0 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+  text-align: center;
+  color: #003e58;
+}
+
+.homeNurseTypeSelectors {
+  display: flex;
+  margin-top: 50px;
+  gap: 20px;
+  width: 100%;
+}
+
+.homeNurseTypeSelectors:hover > :not(:hover) {
+  opacity: 0.5;
+}
+
+.homeNurseTypeSelector {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  width: calc(100% / 6);
+  height: 200px;
+  background-color: lightgray;
+  transition-duration: 300ms;
+}
+
+.homeNurseTypeSelector > img {
+  height: 70px;
+  width: 70px;
+  background-color: #003e58;
+}
+
+.homeNurseTypeSelector > h4 {
+  margin-top: 20px;
+}
+
+.homeNurseTypeSelector:hover {
+  height: 250px;
+}
+
+.typewriter h4 {
+  overflow: hidden;
+  border-right: 0.15em solid #7bbbc5;
+  white-space: nowrap;
+  margin: 0 auto;
+  letter-spacing: 0.15em;
+  animation: typing 4s steps(40, end), blink-caret 0.75s step-end infinite;
+  max-width: fit-content;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 50%;
+  }
+
+  }
+
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: #7bbbc5;
+  }
+  50% {
+    border-color: #aad7d9;
+  }
+}
+
+
+
+.homeVideoCont {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: -350px;
+  padding: 0 150px;
+  position: relative;
+  margin-bottom: 12%;
+}
+
+.homeVideo {
+  width: 100%;
+  height: 99.96vh;
+  background-color: #003e58;
+  border-radius: 20px;
+  border: 10px solid white;
+  box-shadow: 0 0 50px -25px #003e58;
+}
+
+.heroVideo{
+  border-radius: 10px;
+  position: relative;
     width: 100%;
-    padding-top: 100px;
-    
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    text-align: center;
-    color: #003E58;
-}
-
-.homeHead{
-    font-weight: bold;
-    font-size: 65px;
-    letter-spacing: 5px;
-}
-
-.homeTagDown{
-    margin-top: 20px;
-}
-
-.homeSearchCont{
-    display: flex;
-    justify-content: center;
-    align-items: centers;
-    margin-top: 50px;
-}
-
-.homeSelectorCont{
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.homeSelector{
-    display: flex;
-    flex-direction: column;
-
-    width: 60%;
-    color: #003E58;
-
-    margin-top: 50px;
-}
-
-.homeSelectors{
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 20px;
-}
-
-.homeSelectors:hover > :not(:hover){
-    opacity: 0.5;
-}
-
-.homeVideoCont{
-    height: 550px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-top: -250px;
-    padding: 0 150px;
-    position: relative;
-}
-
-.homeVideo{
-    width: 100%;
-    height: 100%;
-    background-color: #003E58;
-    
-    border-radius: 20px;
-    border: 10px solid white;
-    box-shadow: 0 0 50px -25px #003E58;
-}
-
-.homeVideoSide{
-    height: 120px;
-    width: 220px;
-    border-radius: 5px;
-    background-color: white;
-    position: absolute;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 25px 15px;
-
-    box-shadow: 0 0 50px -25px #003E58;
-}
-
-.sideIcon{
-    height: 100%;
-    width: 50px;
-    margin-right: 10px;
-}
-
-.homeVideoSide > div > *{
-    padding: 0;
-    margin: 0;
-    line-height: normal;
-}
-
-.homeVideoSide > div{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.leftside{
-    left: 75px;
-    top: 20%;
-}
-
-.righthside{
-    right: 75px;
-    bottom: 20%;
-}
-
-.homeNurseTypes{
-    min-height: 100vh;
-    padding: 0 60px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    margin-top: 100px;
-    text-align: center;
-
-    color: #003E58;
-}
-
-.homeNurseTypeSelectors{
-    display: flex;
-    margin-top: 50px;
-    gap: 20px;
-    width: 100%;
-}
-
-.homeNurseTypeSelectors:hover > :not(:hover){
-    opacity: 0.5;
-}
-
-.homeNurseTypeSelector{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    border-radius: 5px;
-
-    width: calc(100%/6);
-    height: 200px;
-    background-color: lightgray;
-
-    transition-duration: 300ms;
-}
-
-.homeNurseTypeSelector>img{
-    height: 70px;
-    width: 70px;
-
-    background-color: #003E58;
-}
-
-.homeNurseTypeSelector>h4{
-    margin-top: 20px;
-}
-
-.homeNurseTypeSelector:hover{
-    height: 250px;
+    object-fit: cover;
+    z-index: 0;
 }

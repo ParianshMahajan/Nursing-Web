@@ -7,7 +7,7 @@ const UserModel = require('../models/UserModel');
 const RequestModel = require('../models/RequestModel');
 
 
-
+const mapApiKey=process.env.MAPS_API_KEY;
 
 
 // Decline Requests
@@ -116,4 +116,51 @@ module.exports.ReportUser= async function ReportUser(req,res){
     }
         
 }
+
+
+
+
+module.exports.SearchLocation= async function SearchLocation(req,res){
+    try {
+
+        const query=req.body.query;
+
+        const response = await axios.post(
+            'https://places.googleapis.com/v1/places:searchText',
+            {
+              'textQuery': query,
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Goog-Api-Key': mapApiKey,
+                'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.priceLevel'
+              }
+            }
+          );
+
+        const places = response.data.places.slice(0, 5).map(place => ({
+            name: place.name,
+            formattedAddress: place.formattedAddress,
+            location: place.location
+        }));
+
+        res.json({
+            status:true,
+            message:'Report Submitted',
+            places:places
+        });
+        
+    } catch (error) {
+        res.json({
+            message:error.message,
+            status:false
+        })
+    }
+        
+}
+
+
+
+
 
