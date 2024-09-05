@@ -14,6 +14,7 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
+          {/* GOod */}
           <Route path="/" element={<Home/> }></Route>
           <Route path="/search" element={<Search/> }></Route>
           <Route path="/nurse/:id" element={<NurseProfile/>}></Route>
