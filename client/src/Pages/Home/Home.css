@@ -3,7 +3,7 @@
   .home {
   height: 150vh;
   /* background-color: #aad7d9; */
-  background-image: url('./Assets/background.jpeg') ;
+  /* background-image: url('./Assets/background.jpeg') ; */
   background-repeat:no-repeat ;
   background-size: contain;
   padding: 100px 60px;
@@ -23,14 +23,15 @@
 }
 
 .homeHead {
-  font-weight: bold;
-  font-family: 'Tiro Devanagari Hindi', serif;
-  font-size: 105px;
-  letter-spacing: 5px;
+  font-weight: 500;
+  font-size: 115px;
+  padding: 0;
+  margin: 0;
+  line-height: 0.8;
 }
 
 .homeTagDown {
-  margin-top: 20px;
+  margin-top: 3%;
 }
 
 .homeSearchCont {

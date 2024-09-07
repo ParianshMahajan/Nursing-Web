@@ -1,27 +1,33 @@
-import React from "react";
 import "./Home.css";
 import Navbar from "../Components/Navbar/Navbar";
 import Searchbar from "../Components/Searchbar/Searchbar";
 import Selector from "./Components/Selectors/Selector";
 import Footer from "../Components/Footer/Footer";
 
+import bg from './Assets/bg.png'
+import Hands from './Assets/Hands.svg'
+
 import tapovan from './Assets/Tapovan.mp4'
 import { useNavigate } from "react-router-dom";
+import { Box } from "@mui/material";
 
 
 export default function Home() {
   const navigate=useNavigate();
   return (
-    <>
+    <Box position="relative">
       <Navbar />
-      <div className="home hero">
+      <Box sx={{position:"absolute",background:`url(${bg})`,height:"60vh",width:"100%",zIndex:-1, backgroundSize:'cover',backgroundRepeat:"no-repeat"}}>
+      </Box>
+      <img src={Hands} style={{position:"absolute",top:"7%",left:"9%",width:"13%"}}   />
+
+      <Box className="home hero">
         <div className="homeHeadings typewriter">
-          <h1 className="homeHead" style={{color:"#002130"}}>तपोवन्</h1>
+          <h1 className="tapovan homeHead" style={{color:"#002130"}}>तपोवन</h1>
           <h4 className="homeTagUp">Sehat Ka Saathi</h4>
      
           <p className="homeTagDown">
-            24/7 Service, Private Consultation + Emergency Services <br />
-            Starts at just 10$, Exclusively on our website
+            24/7 Service, Private Consultation + Emergency Services 
           </p>
 
         </div>
@@ -38,7 +44,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
+      </Box>
 
       <div className="homeVideoCont">
         <div className="homeVideo" dangerouslySetInnerHTML={{ __html: `
@@ -118,6 +124,6 @@ export default function Home() {
         </div> */}
       {/* </div> */}
       <Footer />
-    </>
+    </Box>
   );
 }

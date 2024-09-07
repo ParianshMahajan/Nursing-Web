@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Oooh+Baby&family=Tiro+Devanagari+Hindi&family=Work+Sans:wght@200;300;400;600;700;800&display=swap');
 
+
 .navbar{
     padding: 15px 50px;
     background: rgba( 255, 255, 255, 0.3 );
@@ -9,6 +10,10 @@
     position: fixed;  
     width: 100vw;
     z-index: 1000;
+}
+
+.navLogo{
+    
 }
 
 .buttons{
