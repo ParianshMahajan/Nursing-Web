@@ -1,6 +1,6 @@
 import { UserSignupFormComponent } from './user-signup-form'
 
-export default function SignUpNurse() {
+export default function SignUpUser() {
   return (
     <div className="login">
         <div className="loginLeft hidden sm:block">

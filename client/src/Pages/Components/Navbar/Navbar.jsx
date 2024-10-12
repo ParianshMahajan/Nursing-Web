@@ -3,12 +3,20 @@ import { Box, Stack, Typography } from '@mui/material';
 import styles from "./Navbar.module.css"
 // import axios from "axios";
 
+
+const navMap = [
+    { name: "Home", link: "/" },
+    { name: "About", link: "/about" },
+    { name: "Find Nurses", link: "/search" },
+    { name: "Contact Us", link: "/contact" },
+]
+
 export default function Navbar() {
-    
+
     // const[isLogin,setIsLogin]=useState(false);
 
     // const[userDet,setuserDet]=useState({});
-    
+
     // // const url=config.apiurl+'/user/verify';
     // const [cookies, setCookies, removeCookies] = useCookies();
     // let token = cookies.UserLoggedIn || "";
@@ -29,41 +37,42 @@ export default function Navbar() {
     // // },[])
 
     return (
-        <Stack direction='row' sx={{
-            background: "rgba( 255, 255, 255, 0.1 )",
-            backdropFilter: "blur( 7px )",
-            width:1,
-            position:'fixed',
-            zIndex:100,
-            pt:3,
-            px:15
-        }}
-        justifyContent="space-between"
-         alignItems='start'
-        >
-            <p style={{fontSize:"62px", fontWeight:"500",padding:0,margin:0}} 
-            className="tapovan"
-            >तपोवन्</p>
+        <>
+            <Stack direction='row' sx={{
+                background: "rgba( 255, 255, 255, 0.1 )",
+                backdropFilter: "blur( 7px )",
+                width: 1,
+                position: 'fixed',
+                zIndex: 100,
+                pt: 3,
+                px: 15,
+            }}
+                justifyContent="space-between"
+                alignItems='start'
+            >
+                <p style={{ fontSize: "62px", fontWeight: "500", padding: 0, margin: 0 }}
+                    className="tapovan"
+                >तपोवन्</p>
 
-            <Stack direction='row' alignItems='center' pt={2} gap={4}>
-                <Typography sx={{cursor:"pointer","&:hover":{
-                    scale:"1.03"
-                },transition:"all 0.15s"}} fontSize="22px" fontWeight={540} letterSpacing={1} >Home</Typography>
-                <Typography sx={{cursor:"pointer","&:hover":{
-                    scale:"1.03"
-                },transition:"all 0.15s"}} fontSize="22px" fontWeight={540} letterSpacing={1} >About</Typography>
-                <Typography sx={{cursor:"pointer","&:hover":{
-                    scale:"1.03"
-                },transition:"all 0.15s"}} fontSize="22px" fontWeight={540} letterSpacing={1} >Find Nurses</Typography>
-                <Typography sx={{cursor:"pointer","&:hover":{
-                    scale:"1.03"
-                },transition:"all 0.15s"}} fontSize="22px" fontWeight={540} letterSpacing={1} >Contact Us</Typography>
+                <Stack direction='row' alignItems='center' pt={2} gap={4}>
+                    {navMap.map((item, index) => (
+                        <Typography key={index} className={styles.navItem} variant="h6" color="black" sx={{ cursor: "pointer" }} onClick={() => { window.location.href = item.link }}>{item.name}</Typography>
+                    ))}
+                </Stack>
+
+                <p style={{ fontSize: "32px", fontWeight: "500" }}
+                >LOGIN</p>
+
+
+
             </Stack>
 
-            <p style={{fontSize:"32px", fontWeight:"500"}}
-            >LOGIN</p>
+            {/* if on home no br */}
+            {window.location.pathname == "/" ? null : <div><br />
+                <br />
+                <br /></div>}
 
+        </>
 
-        </Stack>
     )
 }

@@ -35,14 +35,14 @@
     opacity: 1;
 }
 
-.Nurse{
+.nurse{
     background-image:  url('./Assets/nurse.png') ;
     background-repeat: no-repeat;
     background-position: 0px -90px;
     background-size: cover;
     border: 4px solid #003E58
 }
-.User{
+.user{
     background-image:  url('./Assets/user.png') ;
     background-repeat: no-repeat;
     background-position: 0px -90px;
