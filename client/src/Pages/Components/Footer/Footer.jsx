@@ -19,7 +19,7 @@ const Footer = () => {
     <section>
       <footer className="footer-distributed">
         <div className="footer-left" >
-          <h3 >
+          <h3 className="tapovan" >
           तपोवन्
           </h3>
           {/* <p className="footer-links">

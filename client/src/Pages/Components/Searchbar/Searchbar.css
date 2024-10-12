@@ -1,14 +1,14 @@
 .search{
-    height: 50px;
     background-color: white;
     border-radius: 100px;
 
-    padding: 3px 10px 3px 30px;
+    padding: 10px 10px 10px 30px;
 
     display: flex;
     /* justify-content: space-between; */
     align-items: center;
     color: #003E58;
+    border: 4px solid #003E58;
 }
 
 .searchSeperator{
@@ -37,7 +37,7 @@
 }
 
 .locationIcon{
-    margin-top: -6px;
+    margin-top: 0px;
     font-size: 25px;
 }
 

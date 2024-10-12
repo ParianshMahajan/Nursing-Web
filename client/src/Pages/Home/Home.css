@@ -6,12 +6,12 @@
   /* background-image: url('./Assets/background.jpeg') ; */
   background-repeat:no-repeat ;
   background-size: contain;
-  padding: 100px 60px;
+  padding: 76px 60px;
 }
 
 .homeHeadings {
   width: 100%;
-  padding-top: 100px;
+  padding-top: 67px;
 
   display: flex;
   flex-direction: column;
@@ -39,7 +39,7 @@
   display: flex;
   justify-content: center;
   align-items: centers;
-  margin-top: 50px;
+  margin-top: 79px;
 }
 
 .homeSelectorCont {

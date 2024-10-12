@@ -15,12 +15,12 @@ export default function Home() {
   const navigate=useNavigate();
   return (
     <Box position="relative">
-      <Navbar />
       <Box sx={{position:"absolute",background:`url(${bg})`,height:"60vh",width:"100%",zIndex:-1, backgroundSize:'cover',backgroundRepeat:"no-repeat"}}>
       </Box>
+      <Navbar />
       <img src={Hands} style={{position:"absolute",top:"13%",left:"9%",width:"13%"}}   />
 
-      <Box className="home hero">
+      <Box className="home hero" >
         <div className="homeHeadings typewriter">
           <h1 className="tapovan homeHead" style={{color:"#002130"}}>तपोवन</h1>
           <h4 className="homeTagUp">Sehat Ka Saathi</h4>
