@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import Navbar from '../Components/Navbar/Navbar';
 import "./NurseProfile.css"
 
 import { FaStar } from "react-icons/fa6";
+import { Navbar } from '../Components/Navbar/navbar';
 
 
 export default function NurseProfile() {

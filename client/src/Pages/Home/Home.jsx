@@ -1,5 +1,4 @@
 import "./Home.css";
-import Navbar from "../Components/Navbar/Navbar";
 import Searchbar from "../Components/Searchbar/Searchbar";
 import Selector from "./Components/Selectors/Selector";
 import Footer from "../Components/Footer/Footer";
@@ -10,6 +9,7 @@ import Hands from './Assets/Hands.svg'
 import tapovan from './Assets/Tapovan.mp4'
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
+import { Navbar } from "../Components/Navbar/navbar";
 
 
 export default function Home() {

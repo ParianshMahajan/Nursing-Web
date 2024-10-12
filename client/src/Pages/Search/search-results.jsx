@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Star, MapPin, Clock, Info } from "lucide-react"
 import { Tooltip } from "@/components/ui/tooltip"
-import { Navbar } from '@/components/navbar'
+import { Navbar } from '@/Pages/Components/Navbar/navbar'
 
 // Mock data for healthcare professionals
 const initialProfessionals = [
