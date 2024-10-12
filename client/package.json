@@ -10,10 +10,28 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@fortawesome/fontawesome-svg-core": "^6.5.1",
+    "@fortawesome/free-brands-svg-icons": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@mui/icons-material": "^6.0.2",
+    "@mui/material": "^6.0.2",
+    "@mui/styled-engine-sc": "^6.0.2",
+    "@mui/system": "^6.0.2",
+    "axios": "^1.6.2",
     "country-state-city": "^3.2.1",
+    "fortawesome": "^0.0.1-security",
+    "leaflet": "^1.9.4",
     "react": "^18.2.0",
+    "react-cookie": "^7.1.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.11.0"
+    "react-geolocation": "^1.0.4",
+    "react-icons": "^4.11.0",
+    "react-leaflet": "^4.2.1",
+    "react-router-dom": "^6.19.0",
+    "styled-components": "^6.1.13"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

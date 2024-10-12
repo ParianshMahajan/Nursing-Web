@@ -1,37 +1,69 @@
-import React from 'react'
-import "./Navbar.css"
+// import * as React from 'react'
+import { Box, Stack, Typography } from '@mui/material';
+import styles from "./Navbar.module.css"
+// import axios from "axios";
 
 export default function Navbar() {
+    
+    // const[isLogin,setIsLogin]=useState(false);
+
+    // const[userDet,setuserDet]=useState({});
+    
+    // // const url=config.apiurl+'/user/verify';
+    // const [cookies, setCookies, removeCookies] = useCookies();
+    // let token = cookies.UserLoggedIn || "";
+    // // useEffect(()=>{
+    // //     if(token!=""){
+    // //         axios.post(url,{token:token})
+    // //         .then((res)=>{
+    // //             console.log(res.data);
+    // //             if(res.status==true){
+    // //                 setIsLogin(true);
+    // //                 setuserDet({Name:res.data.Name,Email:res.data.Email,})
+    // //             }
+    // //             else{
+    // //                 setIsLogin(false);
+    // //             }
+    // //         })
+    // //     }
+    // // },[])
+
     return (
-        <>
-            <nav class="navbar navbar-expand-lg sticky">
-                <div class="container-fluid">
-                    <a class="navbar-brand" href="#">LOGO</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 mx-5">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">About</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Find Nurses</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Contact Us</a>
-                            </li>
-                        </ul>
-                        <form class="d-flex">
-                                <button class="btn navbtn mx-4" style={{backgroundColor: "transparent"}} type="submit">Login</button>
-                                <button class="btn navbtn" style={{backgroundColor: "#003E58", color:"White"}} type="submit">Sign Up</button>
-                        </form>
-                    </div>
-                </div>
-            </nav>
-        </>
+        <Stack direction='row' sx={{
+            background: "rgba( 255, 255, 255, 0.1 )",
+            backdropFilter: "blur( 7px )",
+            width:1,
+            position:'fixed',
+            zIndex:100,
+            pt:3,
+            px:15
+        }}
+        justifyContent="space-between"
+         alignItems='start'
+        >
+            <p style={{fontSize:"62px", fontWeight:"500",padding:0,margin:0}} 
+            className="tapovan"
+            >तपोवन्</p>
+
+            <Stack direction='row' alignItems='center' pt={2} gap={4}>
+                <Typography sx={{cursor:"pointer","&:hover":{
+                    scale:"1.03"
+                },transition:"all 0.15s"}} fontSize="22px" fontWeight={540} letterSpacing={1} >Home</Typography>
+                <Typography sx={{cursor:"pointer","&:hover":{
+                    scale:"1.03"
+                },transition:"all 0.15s"}} fontSize="22px" fontWeight={540} letterSpacing={1} >About</Typography>
+                <Typography sx={{cursor:"pointer","&:hover":{
+                    scale:"1.03"
+                },transition:"all 0.15s"}} fontSize="22px" fontWeight={540} letterSpacing={1} >Find Nurses</Typography>
+                <Typography sx={{cursor:"pointer","&:hover":{
+                    scale:"1.03"
+                },transition:"all 0.15s"}} fontSize="22px" fontWeight={540} letterSpacing={1} >Contact Us</Typography>
+            </Stack>
+
+            <p style={{fontSize:"32px", fontWeight:"500"}}
+            >LOGIN</p>
+
+
+        </Stack>
     )
 }

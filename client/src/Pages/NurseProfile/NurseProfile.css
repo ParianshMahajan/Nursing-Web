@@ -1,0 +1,41 @@
+.nurseProfile{
+    padding: 0 50px;
+    width: 100%;
+    display: flex;
+
+    margin-top: 50px;
+}
+
+.nurseProfileLeft{
+    width: 30%;
+}
+
+.nurseProfileLeft > img{
+    width: 100%;
+}
+
+.nurseProfileRight > *{
+    margin: 0;
+    padding: 0;
+}
+
+.nurseProfileRight{
+    width: 70%;
+    padding-left: 50px;
+}
+
+.nurseExp{
+    
+    color: gray;
+    font-size: 12px;
+    letter-spacing: 2px;
+
+}
+
+.nurseProfileTable > tbody > h6{
+    color: grey;
+}
+
+.nurseProfileTable > tbody > tr > td:nth-of-type(1){
+    font-weight: bold;
+}

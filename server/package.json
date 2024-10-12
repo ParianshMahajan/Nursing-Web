@@ -4,7 +4,7 @@
   "description": "Single Sign on is a project to control access control within society",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -19,12 +19,16 @@
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
     "express-session": "^1.17.3",
+    "ipinfo": "^1.5.1",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^5.8.0",
     "mongoose": "^7.4.3",
+    "node-cron": "^3.0.3",
     "nodemailer": "^6.9.4",
     "nodemon": "^3.0.1",
     "passport": "^0.6.0",
-    "passport-google-oauth": "^2.0.0"
+    "passport-google-oauth": "^2.0.0",
+    "paytmchecksum": "^1.5.1",
+    "stripe": "^14.10.0"
   }
 }
