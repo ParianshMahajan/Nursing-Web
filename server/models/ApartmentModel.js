@@ -70,12 +70,7 @@ const apartmentSchema = new Schema({
     Address:{
         type:String, 
     },
-    City:{
-        type:String, 
-    },
-    State:{
-        type:String, 
-    },
+
 
     Rating:{
         type:Number,
