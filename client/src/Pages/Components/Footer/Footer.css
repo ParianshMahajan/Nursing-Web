@@ -9,7 +9,7 @@ section {
   width: 100%;
   display: inline-block;
   background: #333;
-  height: 50vh;
+  /* height: 50vh; */
   text-align: center;
   font-size: 22px;
   font-weight: 700;
@@ -23,7 +23,7 @@ section {
   width: 100%;
   text-align: left;
   font: bold 16px sans-serif;
-  padding: 55px 50px;
+  padding: 35px 50px;
 }
 
 .footer-distributed .footer-left,

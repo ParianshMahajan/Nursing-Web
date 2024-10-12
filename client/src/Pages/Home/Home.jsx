@@ -46,7 +46,7 @@ export default function Home() {
         </div>
       </Box>
 
-      <div className="homeVideoCont">
+      {/* <div className="homeVideoCont">
         <div className="homeVideo" dangerouslySetInnerHTML={{ __html: `
         <video class="heroVideo" loop autoplay muted playsinline>
         <source src=${tapovan} type="video/mp4">
@@ -67,7 +67,7 @@ export default function Home() {
             <p>Lorem ipsum dolor sit amet.</p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* <div className="homeNurseTypes">
         <h1>

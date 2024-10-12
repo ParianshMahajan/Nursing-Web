@@ -125,20 +125,32 @@ module.exports.SearchLocation= async function SearchLocation(req,res){
     
     const query="Jaisinghpur";
     
-    const response = await axios.post(
-        'https://places.googleapis.com/v1/places:searchText?fields=*',
-        {
-          'textQuery': query,
-          'pageSize': 5,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'authorization': "Bearer ya29.a0AcM612x7KDzlF_f8i5HsY-Iv36TvhalbnmJkDvDYmuh9d6UWP74n_AMrpdhLqnER_wDYuEAnBf0RlGbfN6szPLx5sY7hYm5dbR2yac8YFUfrRhyb53fsWV-11gPgYXe3GtbmVPW2UoNT9_Xz-49q0BvVrm3OPe191VReKgUaCgYKAdsSARMSFQHGX2MipT523cIxeNPZV5_vV1j86Q0174",
-            'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.priceLevel,places.location'
-          }
-        }
-      );
+
+    headers = {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': mapApiKey,
+        'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.priceLevel',
+    }
+    
+    json_data = {
+        'textQuery': 'Spicy Vegetarian Food in Sydney, Australia',
+    }
+    const response = await axios.post('https://places.googleapis.com/v1/places:searchText', headers=headers, json=json_data)
+    console.log(response.data);
+    // const response = await axios.post(
+    //     'https://places.googleapis.com/v1/places:searchText?fields=*',
+    //     {
+    //       'textQuery': query,
+    //       'pageSize': 5,
+    //     },
+    //     {
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         'authorization': "Bearer ",
+    //         'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.priceLevel,places.location'
+    //       }
+    //     }
+    //   );
     try {
 
         const places = response.data.places.slice(0, 5).map(place => ({
@@ -149,9 +161,9 @@ module.exports.SearchLocation= async function SearchLocation(req,res){
 
         res.json({
             status:true,
-            message:'Report Submitted',
-            places:places,
-            // data:response.data
+            // message:'Report Submitted',
+            // places:places,
+            data:response.data
         });
         
     } catch (error) {
