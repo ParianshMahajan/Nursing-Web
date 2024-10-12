@@ -12,7 +12,7 @@ export default function Login() {
             </div>
 
             <div className="loginRight">
-                <h3 style={{ fontWeight: "semi-bold", fontSize: "2em" }}>LOGIN</h3>
+                <h3 style={{ fontWeight: "semi-bold", fontSize: "2em" }}>{type.toUpperCase()} - LOGIN</h3>
                 <form action="">
                     <div className="loginFormGroup">
                         <label htmlFor="email">Email</label>
