@@ -25,14 +25,14 @@
 
     background-color: black;
     opacity: 0.7;
-
-
 }
+
+
+
 
 .loginRight{
     height: inherit;
     width: 30%;
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,8 +42,17 @@
 .loginRight > form{
     display: flex;
     flex-direction: column;
-
     width: 70%;
+}
+
+@media screen and (max-width: 768px){
+    .loginLeft{
+        display: none;
+    }
+
+    .loginRight{
+        width: 100%;
+    }
 }
 
 .loginFormGroup{

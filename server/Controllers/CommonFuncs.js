@@ -121,9 +121,9 @@ module.exports.ReportUser= async function ReportUser(req,res){
 
 
 module.exports.SearchLocation= async function SearchLocation(req,res){
-    // const query=req.body.query;
+    const query=req.body.query;
     
-    const query="Jaisinghpur";
+    // const query="Jaisinghpur";
     
 
     headers = {
@@ -133,7 +133,7 @@ module.exports.SearchLocation= async function SearchLocation(req,res){
     }
     
     json_data = {
-        'textQuery': 'Spicy Vegetarian Food in Sydney, Australia',
+        'textQuery': query
     }
     const response = await axios.post('https://places.googleapis.com/v1/places:searchText', headers=headers, json=json_data)
     console.log(response.data);
