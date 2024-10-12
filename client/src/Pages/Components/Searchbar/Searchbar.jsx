@@ -1,7 +1,6 @@
-import React from 'react'
 import "./Searchbar.css"
 
-import { Country, State, City } from 'country-state-city';
+import { City } from 'country-state-city';
 import { FaLocationDot, FaMagnifyingGlass } from "react-icons/fa6";
 
 
@@ -15,7 +14,7 @@ export default function Searchbar(props) {
                 <div className='locationIcon'><FaLocationDot/></div>
                 <input list='cities' name="browser" id="browser" placeholder='Select City' />
                 <datalist id='cities'>
-                    { Cities.map((cityData) => (<option value={cityData.name + ", " + cityData.stateCode}>{cityData.name + ", " + cityData.stateCode}</option>))}
+                    { Cities.map((cityData) => (<option key={cityData} value={cityData.name + ", " + cityData.stateCode}>{cityData.name + ", " + cityData.stateCode}</option>))}
                 </datalist>
             </div>
             <div className="searchSeperator" />
