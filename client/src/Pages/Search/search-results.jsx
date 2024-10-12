@@ -80,8 +80,8 @@ const initialProfessionals = [
 
 export function SearchResults() {
   const [professionals, setProfessionals] = useState(initialProfessionals)
-  const [location, setLocation] = useState("Patiala")
-  const [specialty, setSpecialty] = useState("Cardiac Nurses")
+  const [location, setLocation] = useState("")
+  const [specialty, setSpecialty] = useState("")
   const [ratingFilter, setRatingFilter] = useState("")
   const [skillFilter, setSkillFilter] = useState("")
 
@@ -112,7 +112,7 @@ export function SearchResults() {
       <main className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-md p-4 mb-8 mt-4">
           <div className="flex flex-wrap gap-4">
-            <div className="flex-1 min-w-[200px]">
+            <div className="flex-2 w-[420px]" style={{overflow:"hidden"}}>
               <Input
                 placeholder="Location"
                 value={location}

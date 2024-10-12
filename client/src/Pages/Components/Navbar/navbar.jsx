@@ -27,8 +27,7 @@ export function Navbar() {
       <div
         className="container mx-auto flex h-24 max-w-6xl items-center justify-between px-4 md:px-6"
         >
-        <Link href="#" className="flex items-center gap-2" >
-          <span className="sr-only">Acme Inc</span>
+        <Link href="/" className="flex items-center gap-2" >
           <p style={{ fontSize: "42px", fontWeight: "500", padding: 0, margin: 0 }}
                     className="tapovan"
                 >तपोवन्</p>
@@ -36,14 +35,14 @@ export function Navbar() {
         </Link>
         <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
          {navMap.map((item, index) => (
-          <Link
+          <a
             key={index}
             href={item.link}
             className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
             style={{ fontSize: "18px", fontWeight: "500" }}
             >
             {item.name}
-          </Link>
+          </a>
         ))}
         </nav>
         <div className="flex items-center gap-4">
@@ -63,13 +62,13 @@ export function Navbar() {
             <SheetContent side="left" className="md:hidden">
               <div className="grid gap-4 p-4">
               {navMap.map((item, index) => (
-                <Link
+                <a
                   key={index}
                   href={item.link}
                   className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
                   >
                   {item.name}
-                </Link>
+                </a>
               ))}
               </div>
             </SheetContent>
