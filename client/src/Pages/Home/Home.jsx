@@ -39,8 +39,8 @@ export default function Home() {
           <div className="homeSelector">
             {/* <h5>Sign up as:</h5> */}
             <div className="homeSelectors">
-              <Selector id="1" details="Nurse"  />
-              <Selector id="2" details="User"  />
+              <Selector id="1" details="nurse"  />
+              <Selector id="2" details="user"  />
             </div>
           </div>
         </div>

@@ -73,6 +73,7 @@ const GoogleMapInput = () => {
   const handleUseCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
+        console.log("Current Location:", position.coords);  
         const { latitude, longitude } = position.coords;
         const currentLocation = new window.google.maps.LatLng(latitude, longitude);
         map.setCenter(currentLocation);
