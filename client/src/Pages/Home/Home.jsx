@@ -6,7 +6,6 @@ import Footer from "../Components/Footer/Footer";
 import bg from './Assets/bg.png'
 import Hands from './Assets/Hands.svg'
 
-import tapovan from './Assets/Tapovan.mp4'
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
 import { Navbar } from "../Components/Navbar/navbar";
@@ -19,7 +18,7 @@ export default function Home() {
       <Navbar />
       <Box sx={{position:"absolute",background:`url(${bg})`,height:"60vh",width:"100%",zIndex:-1, backgroundSize:'cover',backgroundRepeat:"no-repeat"}}>
       </Box>
-      <img src={Hands} style={{position:"absolute",top:"7%",left:"9%",width:"13%"}}   />
+      <img src={Hands} style={{position:"absolute",top:"13%",left:"9%",width:"13%"}}   />
 
       <Box className="home hero">
         <div className="homeHeadings typewriter">
