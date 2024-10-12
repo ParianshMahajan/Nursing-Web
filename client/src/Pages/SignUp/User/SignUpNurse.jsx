@@ -1,5 +1,4 @@
-import { NurseSignupFormComponent } from './nurse-signup-form'
-import React from 'react'
+import { UserSignupFormComponent } from './user-signup-form'
 
 export default function SignUpNurse() {
   return (
@@ -9,9 +8,9 @@ export default function SignUpNurse() {
         </div>
 
         <div className="loginRight pt-5 mb-5">
-            <h3 style={{fontWeight:"semi-bold",fontSize:"2em",marginBottom:"25px"}}>Sign Up</h3>
+            <h3 style={{fontWeight:"semi-bold",fontSize:"2em",marginBottom:"25px"}}>User - Sign Up</h3>
 
-            <NurseSignupFormComponent />
+            <UserSignupFormComponent />
 
             <div className='mb-5'>
 
