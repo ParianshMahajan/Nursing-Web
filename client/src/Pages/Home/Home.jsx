@@ -1,14 +1,12 @@
 import "./Home.css";
 import Searchbar from "../Components/Searchbar/Searchbar";
 import Selector from "./Components/Selectors/Selector";
-import Footer from "../Components/Footer/Footer";
 
 import bg from './Assets/bg.png'
 import Hands from './Assets/Hands.svg'
 
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
-import { Navbar } from "../Components/Navbar/navbar";
 
 
 export default function Home() {
@@ -17,8 +15,7 @@ export default function Home() {
     <Box position="relative">
       <Box sx={{position:"absolute",background:`url(${bg})`,height:"60vh",width:"100%",zIndex:-1, backgroundSize:'cover',backgroundRepeat:"no-repeat"}}>
       </Box>
-      <Navbar />
-      <img src={Hands} style={{position:"absolute",top:"13%",left:"9%",width:"13%"}}   />
+      <img src={Hands} style={{position:"absolute",top:"16%",left:"9%",width:"13%"}}   />
 
       <Box className="home hero" >
         <div className="homeHeadings typewriter">
@@ -122,7 +119,7 @@ export default function Home() {
           </div>
         </div> */}
       {/* </div> */}
-      <Footer />
+      {/* <Footer /> */}
     </Box>
   );
 }

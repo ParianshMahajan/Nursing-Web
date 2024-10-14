@@ -1,9 +1,5 @@
 
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Toggle } from "@/components/ui/toggle"
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
-import { Link } from "react-router-dom"
 import { Button as ButtonMaterial } from "@mui/material"
 import { Button } from "../../../components/ui/button"
 
@@ -17,7 +13,7 @@ const navMap = [
 export function Navbar() {
   return (
     (<header
-      className="sticky top-0 z-50 w-full border-b dark:border-gray-800 dark:bg-gray-950"
+      className="fixed top-0 z-50 w-full border-b dark:border-gray-800 dark:bg-gray-950"
       style={{
         background: "rgba( 255, 255, 255, 0.1 )",
         backdropFilter: "blur( 7px )",
@@ -27,12 +23,12 @@ export function Navbar() {
       <div
         className="container mx-auto flex h-24 max-w-6xl items-center justify-between px-4 md:px-6"
         >
-        <Link href="/" className="flex items-center gap-2" >
+        <a href="/" className="flex items-center gap-2" >
           <p style={{ fontSize: "42px", fontWeight: "500", padding: 0, margin: 0 }}
                     className="tapovan"
                 >तपोवन्</p>
 
-        </Link>
+        </a>
         <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
          {navMap.map((item, index) => (
           <a

@@ -3,8 +3,8 @@ import styles from './UserDash.module.css'
 
 const UserDash = () => {
   return (
-    <div>
-        
+    <div className="min-h-screen bg-black-50">
+        hi
     </div>
   )
 }

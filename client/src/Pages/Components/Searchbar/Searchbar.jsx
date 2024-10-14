@@ -4,12 +4,13 @@ import { City } from 'country-state-city';
 import { FaLocationDot, FaMagnifyingGlass } from "react-icons/fa6";
 
 
-export default function Searchbar(props) {
+// eslint-disable-next-line react/prop-types
+export default function Searchbar({width}) {
 
     let Cities = City.getCitiesOfCountry("IN");
 
     return (
-        <form className="search" style={{width: props.width + "%"}}>
+        <form className="search" style={{width: width + "%"}}>
             <div className="searchLocation">
                 <div className='locationIcon'><FaLocationDot/></div>
                 <input list='cities' name="browser" id="browser" placeholder='Select City' />

@@ -1,9 +1,10 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,500,300,700);
-@import url('https://fonts.googleapis.com/css2?family=Oooh+Baby&family=Tiro+Devanagari+Hindi&family=Work+Sans:wght@200;300;400;600;700;800&Hind:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oooh+Baby&family=Tiro+Devanagari+Hindi&family=Work+Sans:wght@200;300;400;600;700;800&family=Hind:wght@300;400;500;600;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 * {
-  font-family: Open Sans;
+  font-family: "Poppins", serif;
 }
+
 
 
 section {
@@ -40,7 +41,7 @@ section {
 
 .footer-distributed h3 {
   color: #ffffff;
-  font: normal 36px "Open Sans", cursive;
+  font: normal 36px "Poppins", cursive;
   margin: 0;
 }
 
@@ -192,12 +193,9 @@ footer {
 }
 
 .footer-left>h3{
-  font-weight: bold;
-  font-family: 'Tiro Devanagari Hindi', serif;
+  font-weight: 500;
   color: #002a3b;
-  font-size: 65px;
-}
-
-.tapovan{
+  font-size: 65px;  
   font-family: "Hind", system-ui;
 }
+

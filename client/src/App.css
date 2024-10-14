@@ -3,6 +3,9 @@ body{
     background-color: rgb(251, 242, 255);
     font-family: "Poppins", sans-serif;
 }
+*{
+  font-family: "Poppins", sans-serif;
+}
 
 .tapovan{
     font-family: "Hind", system-ui;

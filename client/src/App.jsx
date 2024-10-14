@@ -9,11 +9,14 @@ import UserDash from './Pages/Dashboards/UserDashboard/UserDash';
 import SignUpNurse from './Pages/SignUp/Nurse/SignUpNurse';
 import SignUpUser from './Pages/SignUp/User/SignUpUser';
 import { SearchResults } from './Pages/Search/search-results';
+import { Navbar } from './Pages/Components/Navbar/navbar';
+import Footer from './Pages/Components/Footer/Footer';
 
 function App() {
   return (
     <>
       <BrowserRouter>
+      <Navbar/> 
         <Routes>
           {/* Good */}
           <Route path="/" element={<Home/> }></Route>
@@ -24,8 +27,9 @@ function App() {
           <Route path="/signup/nurse" element={<SignUpNurse/>}></Route>
           <Route path="/signup/user" element={<SignUpUser/>}></Route>
           <Route path="/location" element={<Location/>}></Route>
-          <Route path="/user/dash" element={<UserDash/>}></Route>
+          <Route path="/user/" element={<UserDash/>}></Route>
         </Routes>
+        <Footer/>
       </BrowserRouter>
     </>
   )

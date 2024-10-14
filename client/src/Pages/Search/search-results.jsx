@@ -4,9 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
-import { Star, MapPin, Clock, Info } from "lucide-react"
-import { Tooltip } from "@/components/ui/tooltip"
-import { Navbar } from '@/Pages/Components/Navbar/navbar'
+import { Star, MapPin, Clock } from "lucide-react"
 
 // Mock data for healthcare professionals
 const initialProfessionals = [
@@ -106,8 +104,7 @@ export function SearchResults() {
   }
 
   return (
-    (<div className="min-h-screen bg-sky-50">
-      <Navbar/>
+    (<div className="min-h-screen bg-sky-50" style={{padding:"4%"}}>
 
       <main className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-md p-4 mb-8 mt-4">
