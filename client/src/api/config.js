@@ -1,1 +1,1 @@
-const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://tapovan.herokuapp.com';
+export const API_URL = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://tapowan-backend.hf.space';

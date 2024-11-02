@@ -18,7 +18,7 @@ const NurseModel = require('../models/NurseModel');
 const RequestModel = require('../models/RequestModel');
 const NurseAppsModel = require('../models/NurseAppsModel');
 const UserAppsModel = require('../models/UserAppsModel');
-
+const crypto = require('crypto');
 
 
 

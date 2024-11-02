@@ -1,87 +1,109 @@
-.login{
-    background-color: #BBEBFF;
+/* styles for the login page */
+.login {
     height: 100vh;
     width: 100%;
     display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.loginLeft{
-
+/* styles for the left side of the login page */
+.loginLeft {
     background-color: teal;
     width: 70%;
     height: inherit;
-
     background-image: url("https://images.unsplash.com/photo-1576765607924-3f7b8410a787?q=80&w=1475&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
     background-size: cover;
-
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.loginLeft:after{
+/* add an overlay to the background image */
+.loginLeft:after {
     content: '';
     position: absolute;
     width: 100%;
     height: inherit;
-
-    background-color: black;
-    opacity: 0.7;
+    background-color: rgba(0, 0, 0, 0.7);
 }
 
-
-
-
-.loginRight{
+/* styles for the right side of the login page */
+.loginRight {
     height: inherit;
     width: 30%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background-color: #BBEBFF;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
-.loginRight > form{
+.loginRight > form {
     display: flex;
     flex-direction: column;
     width: 70%;
 }
 
-@media screen and (max-width: 768px){
-    .loginLeft{
-        display: none;
-    }
-
-    .loginRight{
-        width: 100%;
-    }
+.loginRight > form > h2 {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.loginFormGroup{
+/* styles for the form group */
+.loginFormGroup {
     display: flex;
     flex-direction: column;
     margin: 10px 0px;
 }
 
-.loginFormGroup > input{
+/* styles for the input fields */
+.loginFormGroup > input {
     width: 100%;
     height: 35px;
     border-radius: 5px;
     margin-top: 5px;
-
-    text-transform:lowercase;
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-transform: lowercase;
 }
 
-.loginFormGroup > div.button{
+.loginFormGroup > div.button {
     width: inherit;
     background-color: teal;
-
     height: 35px;
     border-radius: 5px;
     color: white;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
 }
 
+.loginFormGroup > div.button:hover {
+    background-color: #00698f;
+}
+
+/* styles for the error messages */
+.loginFormGroup > .error {
+    color: red;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+/* responsive design for the login page */
+@media screen and (max-width: 768px) {
+    .loginLeft {
+        display: none;
+    }
+
+    .loginRight {
+        width: 100%;
+        padding: 20px;
+    }
+}

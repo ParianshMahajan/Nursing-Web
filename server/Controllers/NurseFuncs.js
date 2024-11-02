@@ -11,6 +11,7 @@ const authModel = require('../models/authModel');
 const { sendMail } = require('../middlewares/nodeMailer');
 const RequestModel = require('../models/RequestModel');
 const { getImgurLink } = require('../middlewares/ImgurAPI');
+const crypto = require('crypto');
 
 
 
@@ -72,7 +73,7 @@ module.exports.createNurse= async function createNurse(req,res){
 module.exports.NurseLogin= async function NurseLogin(req,res){
     try {
         let data=req.body;
-        let nurse=await NurseModel.findOne(data.Email);
+        let nurse=await NurseModel.findOne({Email: data.Email});
 
         
         if(nurse){
@@ -125,7 +126,7 @@ module.exports.NurseLogin= async function NurseLogin(req,res){
 module.exports.NurseLoginPart2= async function NurseLoginPart2(req,res){
     try {
         let data=req.body;
-        let nurse=await NurseModel.findOne(data.Email);
+        let nurse=await NurseModel.findOne({Email : data.Email});
         
         if(nurse){
             if(data.Password===nurse.Password){
@@ -233,12 +234,65 @@ module.exports.Requests= async function Requests(req,res){
 
 
 
+module.exports.authenticate = (req, res, next) => {
+    const token = req.headers.authorization;
+    if (token) {
+      jwt.verify(token, secret_key, (err, decoded) => {
+        if (err) {
+          res.status(403).json({ message: 'Invalid token' });
+        } else {
+          req.nurse = decoded;
+          next();
+        }
+      });
+    } else {
+      res.status(401).json({ message: 'No token provided' });
+    }
+  }
+
+  module.exports.dashboard = (req, res) => {
+    NurseModel.findById(req.nurse.uuid, (err, nurse) => {
+      if (err) {
+        res.status(404).json({ message: 'Nurse not found' });
+      } else {
+        res.json(nurse);
+      }
+    });
+  }
+  
 
 
+  module.exports.deleteProfile =  (req, res) => {
+    NurseModel.findByIdAndRemove(req.nurse.uuid, (err) => {
+      if (err) {
+        res.status(404).json({ message: 'Nurse not found' });
+      } else {
+        authModel.findOneAndRemove({ UserID: req.nurse.uuid }, (err) => {
+          if (err) {
+            res.status(400).json({ message: 'Error deleting nurse profile' });
+          } else {
+            res.json({ message: 'Nurse profile deleted successfully' });
+          }
+        });
+      }
+    });
+  }
 
 
-
-
-
-
-
+  module.exports.updateProfile = (req, res) => {
+  NurseModel.findById(req.nurse.uuid, (err, nurse) => {
+    if (err) {
+      res.status(404).json({ message: 'Nurse not found' });
+    } else {
+      nurse.name = req.body.name;
+      nurse.email = req.body.email;
+      nurse.save((err) => {
+        if (err) {
+          res.status(400).json({ message: 'Error updating nurse profile' });
+        } else {
+          res.json(nurse);
+        }
+      });
+    }
+  });
+}
