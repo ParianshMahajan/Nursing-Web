@@ -32,7 +32,7 @@ const nurseSchema = new Schema({
         unique:true,
         required: true,
         validate:function(){
-            return validator.validate(this.Email);
+            //write this email validation code
         }
     },
     PhoneNumber: {

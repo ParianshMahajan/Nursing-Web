@@ -5,9 +5,13 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { X } from 'lucide-react'
-import GoogleMapInput from '@/components/GoogleMapInput'
+import GoogleMapInput from '@/components/GoogleMapInput';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'
 
 export function NurseSignupFormComponent() {
+  const navigate=useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
     password: '',
@@ -22,6 +26,7 @@ export function NurseSignupFormComponent() {
   const [errors, setErrors] = useState({})
   const [newSkill, setNewSkill] = useState('')
   const [newCertificateLink, setNewCertificateLink] = useState('')
+  const [address, setAddress] = useState("")
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -76,7 +81,7 @@ export function NurseSignupFormComponent() {
     if (!formData.phoneNumber) newErrors.phoneNumber = "Phone number is required"
     else if (!/^\d+$/.test(formData.phoneNumber)) newErrors.phoneNumber = "Phone number should only contain digits"
     if (!formData.skilled) newErrors.skilled = "Skill level is required"
-    
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0;
   }
@@ -84,8 +89,18 @@ export function NurseSignupFormComponent() {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (validateForm()) {
-      // Here you would typically send the form data to your backend
-      console.log("Form submitted:", formData)
+      const formDataWithAddress = { ...formData, address };
+      axios.post('http://localhost:3001/nurse/create', formDataWithAddress)
+        .then((response) => {
+          if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+            //redirect to nurse dashboard
+            navigate('/nurse/dashboard');
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }
 
@@ -233,8 +248,8 @@ export function NurseSignupFormComponent() {
 
       <div>
         <Label htmlFor="address">Address</Label>
-        <GoogleMapInput/>
-        </div>
+        <GoogleMapInput handleAddressChange={(address) => setAddress(address)} />
+      </div>
       <Button type="submit" className="w-full">Sign Up</Button>
     </form>)
   );

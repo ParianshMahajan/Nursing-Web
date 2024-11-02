@@ -1,84 +1,107 @@
+import React, { useState, useEffect } from 'react';
+import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 
-import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
-import { Button as ButtonMaterial } from "@mui/material"
-import { Button } from "../../../components/ui/button"
-
-const navMap = [
+const navItems = [
   { name: "Home", link: "/" },
   { name: "About", link: "/about" },
   { name: "Find Nurses", link: "/search" },
-  { name: "Contact Us", link: "/contact" },
-]
+  { name: "Contact Us", link: "/contact" }
+];
 
 export function Navbar() {
-  return (
-    (<header
-      className="fixed top-0 z-50 w-full border-b dark:border-gray-800 dark:bg-gray-950"
-      style={{
-        background: "rgba( 255, 255, 255, 0.1 )",
-        backdropFilter: "blur( 7px )",
-        pt: 3,
-        px: 15,
-      }}>
-      <div
-        className="container mx-auto flex h-24 max-w-6xl items-center justify-between px-4 md:px-6"
-        >
-        <a href="/" className="flex items-center gap-2" >
-          <p style={{ fontSize: "42px", fontWeight: "500", padding: 0, margin: 0 }}
-                    className="tapovan"
-                >तपोवन्</p>
+  const [isScrolled, setIsScrolled] = useState(false);
 
+  // Handle navbar background change on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <header
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
+        isScrolled 
+          ? 'bg-white/80 backdrop-blur-lg shadow-sm' 
+          : 'bg-white/0 backdrop-blur-sm'
+      }`}
+    >
+      <div className="container mx-auto flex h-20 max-w-6xl items-center justify-between px-4">
+        {/* Logo */}
+        <a 
+          href="/" 
+          className="group flex items-center gap-2 transition-transform duration-200 hover:scale-105"
+        >
+          <p className="tapovan text-4xl font-medium m-0 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent p-4">
+            तपोवन्
+          </p>
         </a>
-        <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
-         {navMap.map((item, index) => (
-          <a
-            key={index}
-            href={item.link}
-            className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
-            style={{ fontSize: "18px", fontWeight: "500" }}
+
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-8">
+          {navItems.map((item) => (
+            <a
+              key={item.name}
+              href={item.link}
+              className="relative text-lg font-medium text-gray-600 transition-colors hover:text-gray-900"
             >
-            {item.name}
-          </a>
-        ))}
+              <span className="relative">
+                {item.name}
+                <span className="absolute inset-x-0 -bottom-1 h-0.5 bg-blue-600 scale-x-0 transition-transform group-hover:scale-x-100" />
+              </span>
+            </a>
+          ))}
         </nav>
+
+        {/* Action Buttons */}
         <div className="flex items-center gap-4">
-          <div className="hidden items-center gap-2 text-sm font-medium md:flex">
-            <ButtonMaterial variant="contained" color="primary" href="/login/user">
-              Login
-            </ButtonMaterial>   
-          </div>
-        
+          {/* Desktop Login Button */}
+          <a
+            href="/login/user"
+            className="hidden md:inline-flex items-center justify-center px-6 py-2.5 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+          >
+            Login
+          </a>
+
+          {/* Mobile Menu */}
           <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full md:hidden">
-                <MenuIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                <span className="sr-only">Toggle navigation menu</span>
-              </Button>
+            <SheetTrigger className="inline-flex md:hidden items-center justify-center p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+              <MenuIcon className="h-6 w-6 text-gray-600" />
+              <span className="sr-only">Open menu</span>
             </SheetTrigger>
-            <SheetContent side="left" className="md:hidden">
-              <div className="grid gap-4 p-4">
-              {navMap.map((item, index) => (
-                <a
-                  key={index}
-                  href={item.link}
-                  className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+            <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+              <nav className="flex flex-col gap-4 p-6">
+                {navItems.map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.link}
+                    className="text-lg font-medium text-gray-600 hover:text-gray-900 transition-colors p-2 rounded-lg hover:bg-gray-50"
                   >
-                  {item.name}
+                    {item.name}
+                  </a>
+                ))}
+                <a
+                  href="/login/user"
+                  className="mt-4 inline-flex items-center justify-center px-6 py-3 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                >
+                  Login
                 </a>
-              ))}
-              </div>
+              </nav>
             </SheetContent>
           </Sheet>
         </div>
       </div>
-    </header>)
+    </header>
   );
 }
 
-function MenuIcon(props) {
+function MenuIcon({ className = '' }) {
   return (
-    (<svg
-      {...props}
+    <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -87,15 +110,11 @@ function MenuIcon(props) {
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
-      strokeLinejoin="round">
+      strokeLinejoin="round"
+    >
       <line x1="4" x2="20" y1="12" y2="12" />
       <line x1="4" x2="20" y1="6" y2="6" />
       <line x1="4" x2="20" y1="18" y2="18" />
-    </svg>)
+    </svg>
   );
 }
-
-
-
-
-

@@ -27,7 +27,7 @@ export default function Home() {
           </p>
 
         </div>
-        <div className="homeSearchCont" onClick={()=>{navigate('/search')}} style={{cursor:"pointer"}}>
+        <div className="homeSearchCont" style={{cursor:"pointer"}}>
           <Searchbar width="60" />
         </div>
 

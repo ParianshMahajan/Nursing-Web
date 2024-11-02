@@ -5,23 +5,34 @@ dotenv.config({ path: "./config.env" });
 const jwt=require('jsonwebtoken');
 const secret_key=process.env.secret_key;
 
-const { default: getImgurLink } = require('../middlewares/ImgurAPI');
 const NurseModel = require('../models/NurseModel');
 const UserModel = require('../models/UserModel');
 const authModel = require('../models/authModel');
 const { sendMail } = require('../middlewares/nodeMailer');
 const RequestModel = require('../models/RequestModel');
+const { getImgurLink } = require('../middlewares/ImgurAPI');
 
 
 
 // SIGNUP
+function capitalizeKeys(obj) {
+    return Object.keys(obj).reduce((acc, key) => {
+      const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+      acc[capitalizedKey] = obj[key];
+      return acc;
+    }, {});
+  }
+
 
 module.exports.createNurse= async function createNurse(req,res){
     try {
         let data=req.body; 
 
-        const link = await getImgurLink(data.ImgUrl);
-        data.ImgUrl=link;
+        // const link = await getImgurLink(data.ImgUrl);
+        // data.ImgUrl=link;
+        data.ImgUrl = "N/A";
+        data = capitalizeKeys(data);
+        console.log(data);
         let nurse=await NurseModel.create(data);
         
         const ip =

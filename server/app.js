@@ -9,6 +9,18 @@ var https = require('https');
 const nurseRouter = require('./Routers/nurseRouter.js');
 
 
+var cors = require('cors');
+app.use(cors());
+app.use(express.json());
+app.use(cookieParser());
+app.use(session({
+  secret
+  : 'secret',
+  resave: true,
+  saveUninitialized: true
+}));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({extended: false}));
 
 
   
