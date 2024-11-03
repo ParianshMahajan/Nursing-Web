@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const GoogleMapInput = () => {
+const GoogleMapInput = ({
+  onChange, // Callback for input changes
+  onUseCurrentLocation, // Callback for "Use Current Location" button clicks
+  onPlaceSelected, // Callback for place selection
+}) => {
   const mapRef = useRef(null);
   const inputRef = useRef(null);
   const [map, setMap] = useState(null);
@@ -63,6 +67,8 @@ const GoogleMapInput = () => {
         // Set address in the input field
         if (place.formatted_address) {
           inputRef.current.value = place.formatted_address;
+          handleChange({ target: { value: place.formatted_address } });
+          onPlaceSelected && onPlaceSelected(place); // Call the onPlaceSelected callback
         }
       });
     };
@@ -73,7 +79,7 @@ const GoogleMapInput = () => {
   const handleUseCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
-        console.log("Current Location:", position.coords);  
+        console.log("Current Location:", position.coords);
         const { latitude, longitude } = position.coords;
         const currentLocation = new window.google.maps.LatLng(latitude, longitude);
         map.setCenter(currentLocation);
@@ -84,6 +90,8 @@ const GoogleMapInput = () => {
         geocoder.geocode({ location: currentLocation }, (results, status) => {
           if (status === "OK" && results[0]) {
             inputRef.current.value = results[0].formatted_address;
+            handleChange({ target: { value: results[0].formatted_address } });
+            onUseCurrentLocation && onUseCurrentLocation(results[0]); // Call the onUseCurrentLocation callback
           } else {
             console.error("Geocoder failed due to: " + status);
           }
@@ -92,25 +100,31 @@ const GoogleMapInput = () => {
     }
   };
 
+  const handleChange = (e) => {
+    onChange && onChange(e.target.value); // Call the onChange callback
+  };
+
   return (
-    <div className="flex flex-col space-y-4 p-4">
+    <div className="flex flex-col space-y-4">
       {/* Search Input */}
       <div className="relative">
         <input
           ref={inputRef}
           type="text"
+          name="location"
           placeholder="Search for a location"
           className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
 
       {/* Use Current Location Button */}
-      <button
+      <input
+        type="button"
         onClick={handleUseCurrentLocation}
+        value="Use Current Location"
         className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-      >
-        Use Current Location
-      </button>
+     />
+      
 
       {/* Map */}
       <div

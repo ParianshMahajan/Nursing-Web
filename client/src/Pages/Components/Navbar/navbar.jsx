@@ -10,6 +10,7 @@ const navItems = [
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  //get current path of the page in react
 
   // Handle navbar background change on scroll
   useEffect(() => {
@@ -24,7 +25,7 @@ export function Navbar() {
   return (
     <header
       className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled 
+        isScrolled || true
           ? 'bg-white/80 backdrop-blur-lg shadow-sm' 
           : 'bg-white/0 backdrop-blur-sm'
       }`}

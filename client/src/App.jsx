@@ -6,11 +6,11 @@ import NurseProfile from './Pages/NurseProfile/NurseProfile';
 import Login from './Pages/Login/Login';
 import Location from './Pages/Components/Location/Location';
 import UserDash from './Pages/Dashboards/UserDashboard/UserDash';
-import SignUpNurse from './Pages/SignUp/Nurse/SignUpNurse';
-import SignUpUser from './Pages/SignUp/User/SignUpUser';
 import { SearchResults } from './Pages/Search/search-results';
 import { Navbar } from './Pages/Components/Navbar/navbar';
 import Footer from './Pages/Components/Footer/Footer';
+import { SignUpNurse } from './Pages/SignUp/nurse-signup-form';
+import { SignUpUser } from './Pages/SignUp/user-signup-form';
 
 function App() {
   return (
