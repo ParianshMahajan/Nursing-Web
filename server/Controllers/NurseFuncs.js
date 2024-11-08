@@ -31,9 +31,8 @@ module.exports.createNurse = async function createNurse(req, res) {
 
     // const link = await getImgurLink(data.ImgUrl);
     // data.ImgUrl=link;
-    data.ImgUrl = "N/A";
     data = capitalizeKeys(data);
-    // console.log(data);
+    data.ImgUrl = data.ProfilePhoto ?? '';
 
     let oldNurse = await NurseModel.findOne({ Email: data.Email });
     if (oldNurse) {

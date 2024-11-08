@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { City } from 'country-state-city';
 import { FaLocationDot, FaMagnifyingGlass } from "react-icons/fa6";
 
-const Searchbar = ({ width }) => {
+const Searchbar = () => {
   const [cityQuery, setCityQuery] = useState('');
   const [nurseQuery, setNurseQuery] = useState('');
   const [isLocationFocused, setIsLocationFocused] = useState(false);
@@ -28,7 +28,6 @@ const Searchbar = ({ width }) => {
     <form 
       onSubmit={handleSubmit}
       className="max-w-4xl mx-auto"
-      style={{ width: `${width}%` }}
     >
       <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Location Search */}

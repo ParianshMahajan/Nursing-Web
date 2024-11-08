@@ -1,5 +1,5 @@
 const express=require('express');
-const { createNurse, authenticate, deleteProfile, updateProfile, NurseLogin, NurseLoginPart2 } = require('../Controllers/NurseFuncs');
+const { createNurse, authenticate, deleteProfile, updateProfile, NurseLogin, NurseLoginPart2, dashboard } = require('../Controllers/NurseFuncs');
 const app=express();
 const nurseRouter=express.Router();
 
@@ -16,6 +16,9 @@ nurseRouter.patch('/update-profile', authenticate, updateProfile);
 
 nurseRouter.post('/sendOTP',NurseLogin);
 nurseRouter.post('/verifyOTP',NurseLoginPart2);
+
+
+nurseRouter.get('/dashboard', authenticate, dashboard);
 
 
 module.exports=nurseRouter;

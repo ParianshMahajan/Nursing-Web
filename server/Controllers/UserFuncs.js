@@ -10,7 +10,13 @@ const cron = require('node-cron');
 
 
 
-
+function capitalizeKeys(obj) {
+    return Object.keys(obj).reduce((acc, key) => {
+      const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
+      acc[capitalizedKey] = obj[key];
+      return acc;
+    }, {});
+  }
 
 const { default: getImgurLink } = require('../middlewares/ImgurAPI');
 const UserModel = require('../models/UserModel');
@@ -28,8 +34,21 @@ module.exports.createUser= async function createUser(req,res){
     try {
         let data=req.body; 
 
-        const link = await getImgurLink(data.ImgUrl);
-        data.ImgUrl=link;
+        // const link = await getImgurLink(data.ImgUrl);
+        // data.ImgUrl=link;
+        data = capitalizeKeys(data);
+        data.ImgUrl = data.ProfilePhoto ?? '';
+
+
+        let old = await UserModel.findOne({ Email: data.Email });
+        if (old) {
+        res.status(409).json({
+            message: "User already exists",
+            status: false
+        });
+        return;
+        }
+
         let user=await UserModel.create(data);
         
         const ip =

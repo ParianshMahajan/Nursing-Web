@@ -27,12 +27,15 @@ export function SignUpNurse() {
     skills: [],
     certificateLinks: [],
     aboutMe: '',
-    address: ''
+    address: '',
+    profilePhoto: null
   });
 
   const [errors, setErrors] = useState({});
   const [newSkill, setNewSkill] = useState('');
   const [newCertificateLink, setNewCertificateLink] = useState('');
+
+  const [uploadedImage, setUploadedImage] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,6 +49,15 @@ export function SignUpNurse() {
     setFormData(prev => ({ ...prev, skilled: value }));
     if (errors.skilled) {
       setErrors(prev => ({ ...prev, skilled: '' }));
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const selectedImage = e.target.files[0];
+    setFormData(prev => ({ ...prev, profilePhoto: selectedImage }));
+    setUploadedImage(URL.createObjectURL(selectedImage));
+    if (errors.profilePhoto) {
+      setErrors(prev => ({ ...prev, profilePhoto: '' }));
     }
   };
 
@@ -94,6 +106,10 @@ export function SignUpNurse() {
       newErrors.address = "Address is required";
     }
 
+    if (!formData.profilePhoto) {
+      newErrors.profilePhoto = "Profile photo is required";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -106,18 +122,26 @@ export function SignUpNurse() {
     setStatusMessage({ type: '', message: '' });
 
     try {
-      const response = await axios.post('http://localhost:3001/nurse/create', formData);
-      
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        setStatusMessage({
-          type: 'success',
-          message: 'Account created successfully! Redirecting...'
+      const profilePhoto = formData.profilePhoto;
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const response = await axios.post('http://localhost:3001/nurse/create', {
+          ...formData,
+          profilePhoto: reader.result,
         });
-        setTimeout(() => {
-          navigate('/nurse/dashboard');
-        }, 1500);
-      }
+        
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token);
+          setStatusMessage({
+            type: 'success',
+            message: 'Account created successfully! Redirecting...'
+          });
+          setTimeout(() => {
+            navigate('/nurse/dashboard');
+          }, 1500);
+        }
+      };
+      reader.readAsDataURL(profilePhoto);
     } catch (error) {
       let errorMessage = 'An error occurred during signup';
       
@@ -174,6 +198,27 @@ export function SignUpNurse() {
 
 
           <form onSubmit={handleSubmit} className="space-y-6 w-[70%] mx-auto h-[60vh]">
+            {/* Profile Photo Input */}
+            <div className="space-y-2">
+              <Label htmlFor="profilePhoto" className="text-sm font-medium text-teal-700">Profile Photo</Label>
+              <Input
+                id="profilePhoto"
+                type="file"
+                onChange={handleImageChange}
+                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${
+                  errors.profilePhoto ? 'border-red-500' : 'border-teal-200'
+                }`}
+              />
+              {errors.profilePhoto && <p className="text-red-500 text-sm">{errors.profilePhoto}</p>}
+              {uploadedImage && (
+                <img 
+                  src={uploadedImage}
+                  alt=""
+                  className="mt-2 h-20 w-20 object-cover rounded-full"
+                />
+              )}
+            </div>
+
             {/* Name Input */}
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm font-medium text-teal-700">Name</Label>
