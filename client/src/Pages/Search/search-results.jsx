@@ -104,7 +104,7 @@ export function SearchResults() {
   }
 
   return (
-    (<div className="min-h-screen bg-sky-50" style={{padding:"4%"}}>
+    (<div className="min-h-screen bg-sky-50" style={{paddingTop:"60px"}}>
 
       <main className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-md p-4 mb-8 mt-4">
