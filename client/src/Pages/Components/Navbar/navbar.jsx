@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
+import { Link } from 'react-router-dom';
 
 const navItems = [
   { name: "Home", link: "/" },
@@ -32,40 +33,40 @@ export function Navbar() {
     >
       <div className="container mx-auto flex h-20 max-w-6xl items-center justify-between px-4">
         {/* Logo */}
-        <a 
-          href="/" 
+        <Link
+          to="/" 
           className="group flex items-center gap-2 transition-transform duration-200 hover:scale-105"
         >
           <p className="tapovan text-4xl font-medium m-0 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent p-4">
             तपोवन्
           </p>
-        </a>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
-            <a
+            <Link
               key={item.name}
-              href={item.link}
+              to={item.link}
               className="relative text-lg font-medium text-gray-600 transition-colors hover:text-gray-900"
             >
               <span className="relative">
                 {item.name}
                 <span className="absolute inset-x-0 -bottom-1 h-0.5 bg-blue-600 scale-x-0 transition-transform group-hover:scale-x-100" />
               </span>
-            </a>
+            </Link>
           ))}
         </nav>
 
         {/* Action Buttons */}
         <div className="flex items-center gap-4">
           {/* Desktop Login Button */}
-          <a
-            href="/login/user"
+          <Link
+            to="/login/user"
             className="hidden md:inline-flex items-center justify-center px-6 py-2.5 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
           >
             Login
-          </a>
+          </Link>
 
           {/* Mobile Menu */}
           <Sheet>
@@ -76,20 +77,20 @@ export function Navbar() {
             <SheetContent side="left" className="w-[300px] sm:w-[400px]">
               <nav className="flex flex-col gap-4 p-6">
                 {navItems.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
-                    href={item.link}
+                    to={item.link}
                     className="text-lg font-medium text-gray-600 hover:text-gray-900 transition-colors p-2 rounded-lg hover:bg-gray-50"
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
-                <a
-                  href="/login/user"
+                <Link
+                  to="/login/user"
                   className="mt-4 inline-flex items-center justify-center px-6 py-3 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
                 >
                   Login
-                </a>
+                </Link>
               </nav>
             </SheetContent>
           </Sheet>

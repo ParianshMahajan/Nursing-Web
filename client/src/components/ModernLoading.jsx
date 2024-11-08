@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import EcoNetflixLoader from './EcoLoading';
 
 const ModernLoading = () => {
   const colors = {
@@ -78,7 +77,7 @@ const ModernLoading = () => {
           >
             <motion.div
               className="w-40 h-40 rounded-full opacity-30"
-              style={{ 
+              style={{
                 backgroundColor: color,
                 filter: 'blur(40px)',
               }}
@@ -86,10 +85,12 @@ const ModernLoading = () => {
             />
           </motion.div>
         ))}
+
         <motion.div
           className="w-20 h-20 rounded-full border-4 border-white border-t-transparent animate-spin"
           style={{ borderTopColor: colors.primary }}
         />
+
         <motion.p
           className="mt-8 text-2xl font-semibold text-center"
           style={{ color: colors.text }}

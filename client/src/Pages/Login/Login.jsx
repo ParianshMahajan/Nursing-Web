@@ -4,6 +4,7 @@ import { EyeIcon, EyeOffIcon, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import { API_URL } from '@/api/config';
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 const Login = () => {
   const { type } = useParams();
@@ -17,6 +18,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isOTPSent, setIsOTPSent] = useState(false);
   const [statusMessage, setStatusMessage] = useState({ type: '', message: '' });
+  const [token, setToken] = useLocalStorage("token", null);
 
   // Form validation
   const validateForm = useCallback(() => {
@@ -115,8 +117,8 @@ const Login = () => {
       });
       
       if (response.data.status) {
-        localStorage.setItem('token', response.data.token);
-        setStatusMessage({ 
+        setToken(response.data.token);
+        setStatusMessage({
           type: 'success', 
           message: 'Login successful. Redirecting...' 
         });

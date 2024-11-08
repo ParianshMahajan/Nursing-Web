@@ -244,11 +244,21 @@ module.exports.Requests = async function Requests(req, res) {
 
 
 module.exports.authenticate = (req, res, next) => {
-  const token = req.headers.authorization;
+
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith('Bearer ')) {
+    return res.status(401).json({
+      status: false,
+      message: 'Authorization header missing or invalid format'
+    });
+  }
+
+  const token = authHeader.split(' ')[1];
+
   if (token) {
     jwt.verify(token, secret_key, (err, decoded) => {
       if (err) {
-        res.status(403).json({ message: 'Invalid token' });
+        res.status(401).json({ message: 'Invalid token ' + err });
       } else {
         req.nurse = decoded;
         next();
@@ -304,3 +314,28 @@ module.exports.updateProfile = (req, res) => {
     }
   });
 }
+
+
+module.exports.getProfile = async (req, res) => {
+  try {
+    const nurse = await NurseModel.findById(req.nurse.uuid);
+    
+    if (!nurse) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Nurse not found' 
+      });
+    }
+    
+    return res.status(200).json({
+      success: true,
+      data: nurse
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error retrieving nurse profile',
+      error: error.message
+    });
+  }
+};

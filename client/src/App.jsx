@@ -11,25 +11,28 @@ import { Navbar } from './Pages/Components/Navbar/navbar';
 import Footer from './Pages/Components/Footer/Footer';
 import { SignUpNurse } from './Pages/SignUp/nurse-signup-form';
 import { SignUpUser } from './Pages/SignUp/user-signup-form';
+import { AuthProvider } from './api/auth';
 
 function App() {
   return (
     <>
       <BrowserRouter>
-      <Navbar/> 
-        <Routes>
-          {/* Good */}
-          <Route path="/" element={<Home/> }></Route>
-          <Route path="/search" element={<SearchResults/> }></Route>
-          <Route path="/nurse/:id" element={<NurseProfile/>}></Route>
-          <Route path="/login/:type" element={<Login/>}></Route>
-          {/* <Route path="/signup" element={<SignUp/>}></Route> */}
-          <Route path="/signup/nurse" element={<SignUpNurse/>}></Route>
-          <Route path="/signup/user" element={<SignUpUser/>}></Route>
-          <Route path="/location" element={<Location/>}></Route>
-          <Route path="/user/" element={<UserDash/>}></Route>
-        </Routes>
-        <Footer/>
+        <AuthProvider>
+          <Navbar />
+          <Routes>
+            {/* Good */}
+            <Route path="/" element={<Home />}></Route>
+            <Route path="/search" element={<SearchResults />}></Route>
+            <Route path="/nurse/:id" element={<NurseProfile />}></Route>
+            <Route path="/login/:type" element={<Login />}></Route>
+            {/* <Route path="/signup" element={<SignUp/>}></Route> */}
+            <Route path="/signup/nurse" element={<SignUpNurse />}></Route>
+            <Route path="/signup/user" element={<SignUpUser />}></Route>
+            <Route path="/location" element={<Location />}></Route>
+            <Route path="/user/" element={<UserDash />}></Route>
+          </Routes>
+          <Footer />
+        </AuthProvider>
       </BrowserRouter>
     </>
   )
