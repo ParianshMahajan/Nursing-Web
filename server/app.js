@@ -10,9 +10,10 @@ const nurseRouter = require('./Routers/nurseRouter.js');
 
 
 var cors = require('cors');
+const extraRouter = require('./Routers/extraRouter.js');
 app.use(cors());
-app.use(express.json());
-app.use(cookieParser());
+app.use(express.json({limit: '5mb', extended: true}));
+
 app.use(session({
   secret
   : 'secret',
@@ -34,4 +35,5 @@ startRoutes();
 function startRoutes(){
   app.use('/user',require('./Routers/userRouter.js'));
   app.use('/nurse',nurseRouter);
+  app.use('/extra',extraRouter);
 }

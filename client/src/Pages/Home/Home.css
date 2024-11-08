@@ -24,9 +24,9 @@
 
 .homeHead {
   font-weight: 500;
-  font-size: 115px;
+  font-size: 116px;
   padding: 0;
-  margin: 0;
+  margin: 20px;
   line-height: 0.8;
 }
 
@@ -54,7 +54,6 @@
   flex-direction: column;
   justify-content: space-evenly;
 
-  width: 60%;
   color: #003e58;
 
   margin-top: 50px;
@@ -62,9 +61,9 @@
 
 .homeSelectors {
   display: flex;
-  justify-content: space-evenly;
   width: 100%;
   margin-top: 20px;
+  flex-wrap: wrap;
 }
 
 .homeSelectors:hover > :not(:hover) {

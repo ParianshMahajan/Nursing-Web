@@ -28,7 +28,7 @@ export default function Home() {
 
         </div>
         <div className="homeSearchCont" style={{cursor:"pointer"}}>
-          <Searchbar width="60" />
+          <Searchbar/>
         </div>
 
         <div className="homeSelectorCont">
