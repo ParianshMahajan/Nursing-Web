@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { EyeIcon, EyeOffIcon, Loader2 } from 'lucide-react';
 import GoogleMapInput from '@/components/GoogleMapInput';
+import axios from 'axios';
+import { API_URL } from '@/api/config';
+import { AuthContext } from '@/api/auth';
 
 export function SignUpUser() {
   const [formData, setFormData] = useState({
@@ -15,6 +18,8 @@ export function SignUpUser() {
     phoneNumber: '',
     location: ''
   });
+    
+
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +30,7 @@ export function SignUpUser() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
+
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -33,7 +38,7 @@ export function SignUpUser() {
 
   const validateForm = () => {
     let newErrors = {};
-    
+
     // Name validation
     if (!formData.name) {
       newErrors.name = "Name is required";
@@ -77,21 +82,46 @@ export function SignUpUser() {
     e.preventDefault();
     if (!validateForm()) return;
 
+
+
     setIsLoading(true);
     setStatusMessage({ type: '', message: '' });
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setStatusMessage({
-        type: 'success',
-        message: 'Account created successfully! Redirecting...'
+      const response = await axios.post(API_URL + '/user/create', {
+        ...formData,
       });
-      // Add your actual API call here
+
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        setStatusMessage({
+          type: 'success',
+          message: 'Account created successfully! Redirecting...'
+        });
+        setTimeout(() => {
+          navigate('/user/dashboard');
+        }, 1500);
+      }
+
     } catch (error) {
+      let errorMessage = 'An error occurred during signup ' + error.message;
+
+      // Handle specific error cases
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.status === 409) {
+        errorMessage = 'Email already exists';
+      } else if (error.response?.status === 400) {
+        errorMessage = 'Invalid input data';
+      } else if (error.response?.status === 401) {
+        errorMessage = 'Invalid OTP';
+      } else if (!navigator.onLine) {
+        errorMessage = 'No internet connection';
+      }
+
       setStatusMessage({
         type: 'error',
-        message: error.message || 'An error occurred during signup'
+        message: errorMessage
       });
     } finally {
       setIsLoading(false);
@@ -125,7 +155,7 @@ export function SignUpUser() {
             </Alert>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6 w-[70%] mx-auto h-[60vh]">
+          <form onSubmit={handleSubmit} className="space-y-6 w-[70%] mx-auto h-[50vh]">
             {/* Name Input */}
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm font-medium text-teal-700">Name</Label>
@@ -134,9 +164,8 @@ export function SignUpUser() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${
-                  errors.name ? 'border-red-500' : 'border-teal-200'
-                }`}
+                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${errors.name ? 'border-red-500' : 'border-teal-200'
+                  }`}
                 placeholder="John Doe"
               />
               {errors.name && (
@@ -154,9 +183,8 @@ export function SignUpUser() {
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={handleChange}
-                  className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${
-                    errors.password ? 'border-red-500' : 'border-teal-200'
-                  }`}
+                  className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${errors.password ? 'border-red-500' : 'border-teal-200'
+                    }`}
                   placeholder="••••••••"
                 />
                 <button
@@ -187,9 +215,8 @@ export function SignUpUser() {
                   type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${
-                    errors.confirmPassword ? 'border-red-500' : 'border-teal-200'
-                  }`}
+                  className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${errors.confirmPassword ? 'border-red-500' : 'border-teal-200'
+                    }`}
                   placeholder="••••••••"
                 />
                 <button
@@ -219,9 +246,8 @@ export function SignUpUser() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${
-                  errors.email ? 'border-red-500' : 'border-teal-200'
-                }`}
+                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${errors.email ? 'border-red-500' : 'border-teal-200'
+                  }`}
                 placeholder="john@example.com"
               />
               {errors.email && (
@@ -238,9 +264,8 @@ export function SignUpUser() {
                 type="tel"
                 value={formData.phoneNumber}
                 onChange={handleChange}
-                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${
-                  errors.phoneNumber ? 'border-red-500' : 'border-teal-200'
-                }`}
+                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${errors.phoneNumber ? 'border-red-500' : 'border-teal-200'
+                  }`}
                 placeholder="1234567890"
                 maxLength={10}
               />
@@ -253,7 +278,7 @@ export function SignUpUser() {
             <div className="space-y-2">
               <Label htmlFor="address" className="text-sm font-medium text-teal-700">Address</Label>
               <GoogleMapInput
-              
+
               />
             </div>
 

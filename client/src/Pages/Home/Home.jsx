@@ -7,36 +7,46 @@ import Hands from './Assets/Hands.svg'
 
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/material";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "@/api/auth";
 
 
 export default function Home() {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+  const { role,token } = useContext(AuthContext);
+
+  useEffect(() => {
+    if(role && token) {
+      navigate(`/${role}/dashboard`);
+    }
+  }, [role,token]);
+
   return (
     <Box position="relative">
-      <Box sx={{position:"absolute",background:`url(${bg})`,height:"60vh",width:"100%",zIndex:-1, backgroundSize:'cover',backgroundRepeat:"no-repeat"}}>
+      <Box sx={{ position: "absolute", background: `url(${bg})`, height: "60vh", width: "100%", zIndex: -1, backgroundSize: 'cover', backgroundRepeat: "no-repeat" }}>
       </Box>
-      <img src={Hands} style={{position:"absolute",top:"16%",left:"9%",width:"13%"}}   />
+      <img src={Hands} style={{ position: "absolute", top: "16%", left: "9%", width: "13%" }} />
 
       <Box className="home hero" >
         <div className="homeHeadings typewriter">
-          <h1 className="tapovan homeHead" style={{color:"#002130"}}>तपोवन</h1>
+          <h1 className="tapovan homeHead" style={{ color: "#002130" }}>तपोवन</h1>
           <h4 className="homeTagUp">Sehat Ka Saathi</h4>
-     
+
           <p className="homeTagDown">
-            24/7 Service, Private Consultation + Emergency Services 
+            24/7 Service, Private Consultation + Emergency Services
           </p>
 
         </div>
-        <div className="homeSearchCont" style={{cursor:"pointer"}}>
-          <Searchbar/>
+        <div className="homeSearchCont" style={{ cursor: "pointer" }}>
+          <Searchbar />
         </div>
 
         <div className="homeSelectorCont">
           <div className="homeSelector">
             {/* <h5>Sign up as:</h5> */}
             <div className="homeSelectors">
-              <Selector key="1" id="1" details="nurse"  />
-              <Selector key="2" id="2" details="user"  />
+              <Selector key="1" id="1" details="nurse" />
+              <Selector key="2" id="2" details="user" />
             </div>
           </div>
         </div>
@@ -73,7 +83,7 @@ export default function Home() {
           Lorem ipsum dolor sit amet consectetur adipisicing amet consectetur
           adipisicing.
         </p> */}
-{/* 
+      {/* 
         <div className="homeNurseTypeSelectors">
           <div className="homeNurseTypeSelector">
             <img

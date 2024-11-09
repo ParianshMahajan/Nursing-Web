@@ -9,6 +9,7 @@ import GoogleMapInput from '@/components/GoogleMapInput';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { API_URL } from '@/api/config';
 
 export function SignUpNurse() {
   const navigate = useNavigate();
@@ -125,7 +126,7 @@ export function SignUpNurse() {
       const profilePhoto = formData.profilePhoto;
       const reader = new FileReader();
       reader.onload = async () => {
-        const response = await axios.post('http://localhost:3001/nurse/create', {
+        const response = await axios.post( API_URL + '/nurse/create', {
           ...formData,
           profilePhoto: reader.result,
         });

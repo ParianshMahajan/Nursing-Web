@@ -13,6 +13,7 @@ const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   
   const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState("user");
   const [token, setToken] = useLocalStorage("token", null);
 
   const verifyToken = async () => {
@@ -27,14 +28,16 @@ const AuthProvider = ({ children }) => {
         console.log('Token expired');
       }
       else{
-        console.log(response.data);
+        // console.log(response.data);
         var role = response.data.Role;
         if(role === 'Nurse'){
           setLoading(false);
+          setRole('nurse');
           navigate('/nurse/dashboard');
         }
         else if(role === 'User'){
           setLoading(false);
+          setRole('user');
           navigate('/user/dashboard');
         }
         else{
@@ -67,7 +70,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{token, logout }}>
+    <AuthContext.Provider value={{token, logout,role }}>
       {loading && <ModernLoading/>}
       {children}
     </AuthContext.Provider>
@@ -85,5 +88,5 @@ export { AuthProvider, AuthContext };
 
 
 
-// const { register } = useContext(AuthContext);
+// const { token } = useContext(AuthContext);
 // use in child like a state

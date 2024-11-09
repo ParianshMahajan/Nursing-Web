@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { EyeIcon, EyeOffIcon, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import { API_URL } from '@/api/config';
@@ -263,12 +263,12 @@ const Login = () => {
 
             <p className="text-center text-sm text-teal-600">
               Don't have an account?{" "}
-              <a
-                href={`/signup/${type}`}
+              <Link
+                to={`/signup/${type}`}
                 className="font-medium text-teal-700 hover:text-teal-800 underline"
               >
                 Sign Up
-              </a>
+              </Link>
             </p>
           </form>
         </div>

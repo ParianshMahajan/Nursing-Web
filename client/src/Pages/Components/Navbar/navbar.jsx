@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Link } from 'react-router-dom';
+import { AuthContext } from '@/api/auth';
 
 const navItems = [
   { name: "Home", link: "/" },
@@ -12,6 +13,9 @@ const navItems = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   //get current path of the page in react
+
+
+  const { token, logout } = useContext(AuthContext);
 
   // Handle navbar background change on scroll
   useEffect(() => {
@@ -25,16 +29,15 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled || true
-          ? 'bg-white/80 backdrop-blur-lg shadow-sm' 
-          : 'bg-white/0 backdrop-blur-sm'
-      }`}
+      className={`fixed top-0 z-50 w-full transition-all duration-300 ${isScrolled || true
+        ? 'bg-white/80 backdrop-blur-lg shadow-sm'
+        : 'bg-white/0 backdrop-blur-sm'
+        }`}
     >
       <div className="container mx-auto flex h-20 max-w-6xl items-center justify-between px-4">
         {/* Logo */}
         <Link
-          to="/" 
+          to="/"
           className="group flex items-center gap-2 transition-transform duration-200 hover:scale-105"
         >
           <p className="tapovan text-4xl font-medium m-0 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent p-4">
@@ -61,12 +64,30 @@ export function Navbar() {
         {/* Action Buttons */}
         <div className="flex items-center gap-4">
           {/* Desktop Login Button */}
-          <Link
-            to="/login/user"
-            className="hidden md:inline-flex items-center justify-center px-6 py-2.5 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
-          >
-            Login
-          </Link>
+          {token ? (
+            <>
+              {/* <Link
+                to="/"
+                className="hidden md:inline-flex items-center justify-center px-6 py-2.5 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+              >
+                Dashboard
+              </Link> */}
+              <button onClick={() => { logout() }} className="hidden md:inline-flex items-center justify-center px-6 py-2.5 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login/user"
+                className="hidden md:inline-flex items-center justify-center px-6 py-2.5 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+              >
+                Login
+              </Link>
+
+            </>
+          )}
+
 
           {/* Mobile Menu */}
           <Sheet>
@@ -85,12 +106,32 @@ export function Navbar() {
                     {item.name}
                   </Link>
                 ))}
-                <Link
-                  to="/login/user"
-                  className="mt-4 inline-flex items-center justify-center px-6 py-3 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
-                >
-                  Login
-                </Link>
+
+                {token ? (
+                  <>
+                    {/* <Link
+                      to="/"
+                      className="mt-4 inline-flex items-center justify-center px-6 py-3 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                    >
+                      Dashboard
+                    </Link> */}
+                    <button onClick={() => { logout() }} className="mt-4 inline-flex items-center justify-center px-6 py-3 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/login/user"
+                      className="mt-4 inline-flex items-center justify-center px-6 py-3 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                    >
+                      Login
+                    </Link>
+
+
+                  </>
+                )}
+
               </nav>
             </SheetContent>
           </Sheet>

@@ -25,6 +25,8 @@ const RequestModel = require('../models/RequestModel');
 const NurseAppsModel = require('../models/NurseAppsModel');
 const UserAppsModel = require('../models/UserAppsModel');
 const crypto = require('crypto');
+const authModel = require('../models/authModel');
+const { sendMail } = require('../middlewares/nodeMailer');
 
 
 
@@ -88,7 +90,7 @@ module.exports.createUser= async function createUser(req,res){
 module.exports.UserLogin= async function UserLogin(req,res){
     try {
         let data=req.body;
-        let user=await UserModel.findOne(data.Email);
+        let user=await UserModel.findOne({Email : data.Email});
 
         
         if(user){
@@ -141,7 +143,7 @@ module.exports.UserLogin= async function UserLogin(req,res){
 module.exports.UserLoginPart2= async function UserLoginPart2(req,res){
     try {
         let data=req.body;
-        let user=await UserModel.findOne(data.Email);
+        let user=await UserModel.findOne({Email:req.body.Email});
         
         if(user){
             if(data.Password===user.Password){
@@ -629,3 +631,27 @@ module.exports.test= async function test(req,res){
 }
 
 
+
+module.exports.getProfile = async (req, res) => {
+    try {
+      const user = await UserModel.findById(req.user.uuid);
+      
+      if (!user) {
+        return res.status(404).json({ 
+          success: false, 
+          message: 'Nurse not found' 
+        });
+      }
+      
+      return res.status(200).json({
+        success: true,
+        data: user
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error retrieving nurse profile',
+        error: error.message
+      });
+    }
+  };

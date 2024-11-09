@@ -29,7 +29,7 @@ function App() {
             <Route path="/signup/nurse" element={<SignUpNurse />}></Route>
             <Route path="/signup/user" element={<SignUpUser />}></Route>
             <Route path="/location" element={<Location />}></Route>
-            <Route path="/user/" element={<UserDash />}></Route>
+            <Route path="/user/dashboard" element={<UserDash />}></Route>
           </Routes>
           <Footer />
         </AuthProvider>
