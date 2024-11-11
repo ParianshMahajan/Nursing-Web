@@ -28,11 +28,20 @@ function capitalizeKeys(obj) {
 module.exports.createNurse = async function createNurse(req, res) {
   try {
     let data = req.body;
-
-    // const link = await getImgurLink(data.ImgUrl);
-    // data.ImgUrl=link;
+    
     data = capitalizeKeys(data);
+    // const link = await getImgurLink(data.ProfilePhoto);
+    // console.log(link);
+    // data.ImgUrl=link;
     data.ImgUrl = data.ProfilePhoto ?? '';
+    data.IsAvailable = true;
+    
+    try{
+      data.City =data.Address.split(',').slice(-3)[0].trim();
+    }catch(e){
+      data.City = '';
+    }
+  
 
     let oldNurse = await NurseModel.findOne({ Email: data.Email });
     if (oldNurse) {
@@ -370,22 +379,165 @@ module.exports.deleteProfile = (req, res) => {
 }
 
 
-module.exports.updateProfile = (req, res) => {
-  NurseModel.findById(req.nurse.uuid, (err, nurse) => {
-    if (err) {
-      res.status(404).json({ message: 'Nurse not found' });
-    } else {
-      nurse = Object.assign(nurse, req.body);
-      nurse.save((err) => {
-        if (err) {
-          res.status(400).json({ message: 'Error updating nurse profile ' + err });
-        } else {
-          res.json(nurse);
-        }
+module.exports.updateProfile = async (req, res) => {
+  try {
+    // Validate the request body
+    const updateFields = {
+      Name: req.body.Name,
+      AboutMe: req.body.AboutMe,
+      Email: req.body.Email,
+      PhoneNumber: req.body.PhoneNumber,
+      Skilled: req.body.Skilled,
+      Skills: req.body.Skills,
+      Links: req.body.Links,
+      Price: req.body.Price,
+      IsAvailable: req.body.IsAvailable,
+      Address: req.body.Address,
+      City: req.body.City,
+      ImgUrl: req.body.ImgUrl
+    };
+
+    // Remove undefined fields
+    Object.keys(updateFields).forEach(key => 
+      updateFields[key] === undefined && delete updateFields[key]
+    );
+
+    // Find and update the nurse profile
+    const nurse = await NurseModel.findById(req.nurse.uuid);
+
+    if(!nurse.ConfirmPassword){
+      nurse.ConfirmPassword=nurse.Password;
+    }
+    
+    if (!nurse) {
+      return res.status(404).json({
+        success: false,
+        message: 'Nurse profile not found'
       });
     }
-  });
-}
+
+    // If email is being updated, check if it's already in use
+    if (updateFields.Email && updateFields.Email !== nurse.Email) {
+      const emailExists = await NurseModel.findOne({ 
+        Email: updateFields.Email,
+        _id: { $ne: req.nurse.uuid }
+      });
+
+      if (emailExists) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email is already in use'
+        });
+      }
+    }
+
+    // Validate phone number format if it's being updated
+    if (updateFields.PhoneNumber) {
+      const phoneRegex = /^\d{10}$/;  // Assumes 10-digit phone number
+      if (!phoneRegex.test(updateFields.PhoneNumber)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid phone number format'
+        });
+      }
+    }
+
+    // Validate skill level if it's being updated
+    if (updateFields.Skilled && ![1, 2, 3].includes(updateFields.Skilled)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid skill level. Must be 1 (Skilled), 2 (Semi-Skilled), or 3 (Unskilled)'
+      });
+    }
+
+    // Validate price if it's being updated
+    if (updateFields.Price && updateFields.Price < 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Price cannot be negative'
+      });
+    }
+
+    // Update the nurse profile
+    Object.assign(nurse, updateFields);
+
+    // Save the updated profile
+    await nurse.save();
+
+    // Return the updated nurse profile
+    return res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: nurse
+    });
+
+  } catch (error) {
+    // Handle mongoose validation errors
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error',
+        errors: Object.values(error.errors).map(err => err.message)
+      });
+    }
+
+    // Handle other errors
+    console.error('Error updating nurse profile:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error while updating profile',
+      error: error.message
+    });
+  }
+};
+
+// Optional: Add a method to update just the availability status
+module.exports.updateAvailability = async (req, res) => {
+  try {
+    const { isAvailable } = req.body;
+
+    if (typeof isAvailable !== 'boolean') {
+      return res.status(400).json({
+        success: false,
+        message: 'IsAvailable must be a boolean value'
+      });
+    }
+
+    const nurse = await NurseModel.findById(req.nurse.uuid);
+    
+    if (!nurse) {
+      return res.status(404).json({
+        success: false,
+        message: 'Nurse profile not found'
+      });
+    }
+
+    // Check if price is set before allowing availability to be true
+    if (isAvailable && !nurse.Price) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot set availability to true without setting a price'
+      });
+    }
+
+    nurse.IsAvailable = isAvailable;
+    await nurse.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Availability updated successfully',
+      data: { isAvailable: nurse.IsAvailable }
+    });
+
+  } catch (error) {
+    console.error('Error updating nurse availability:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error while updating availability',
+      error: error.message
+    });
+  }
+};
 
 
 module.exports.getProfile = async (req, res) => {

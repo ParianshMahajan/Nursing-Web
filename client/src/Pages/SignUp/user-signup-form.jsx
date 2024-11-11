@@ -74,6 +74,11 @@ export function SignUpUser() {
       newErrors.phoneNumber = "Phone number should be 10 digits";
     }
 
+    // Address validation
+    if (!formData.address) {
+      newErrors.address = "Address is required";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -126,6 +131,10 @@ export function SignUpUser() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleAddressChange = ({ coords, address }) => {
+    setFormData(prev => ({ ...prev, address: address, coords: coords }));
   };
 
   return (
@@ -278,7 +287,7 @@ export function SignUpUser() {
             <div className="space-y-2">
               <Label htmlFor="address" className="text-sm font-medium text-teal-700">Address</Label>
               <GoogleMapInput
-
+              onChange={handleAddressChange}
               />
             </div>
 

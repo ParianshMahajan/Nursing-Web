@@ -49,6 +49,7 @@ const GoogleMapInput = ({
 
       autocompleteInstance.addListener("place_changed", () => {
         const place = autocompleteInstance.getPlace();
+        
         if (!place.geometry || !place.geometry.location) {
           window.alert("No details available for input: '" + place.name + "'");
           return;
@@ -64,10 +65,15 @@ const GoogleMapInput = ({
         marker.setPosition(place.geometry.location);
         marker.setVisible(true);
 
+        const returnObj = {
+          coords :{lat: place.geometry.location.lat(), lng: place.geometry.location.lng()},
+          address: place.formatted_address,
+        }
+
         // Set address in the input field
         if (place.formatted_address) {
           inputRef.current.value = place.formatted_address;
-          handleChange({ target: { value: place.formatted_address } });
+          handleChange(returnObj);
           onPlaceSelected && onPlaceSelected(place); // Call the onPlaceSelected callback
         }
       });
@@ -90,7 +96,11 @@ const GoogleMapInput = ({
         geocoder.geocode({ location: currentLocation }, (results, status) => {
           if (status === "OK" && results[0]) {
             inputRef.current.value = results[0].formatted_address;
-            handleChange({ target: { value: results[0].formatted_address } });
+            const returnObj = {
+              coords: { lat: latitude, lng: longitude },
+              address: results[0].formatted_address,
+            };
+            handleChange(returnObj);
             onUseCurrentLocation && onUseCurrentLocation(results[0]); // Call the onUseCurrentLocation callback
           } else {
             console.error("Geocoder failed due to: " + status);
@@ -100,8 +110,8 @@ const GoogleMapInput = ({
     }
   };
 
-  const handleChange = (e) => {
-    onChange && onChange(e.target.value); // Call the onChange callback
+  const handleChange = (obj) => {
+    onChange && onChange(obj); // Call the onChange callback
   };
 
   return (

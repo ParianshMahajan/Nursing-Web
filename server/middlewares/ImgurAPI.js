@@ -2,6 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 const ImgurApiURL=process.env.ImgurApiURL;
 
+const axios = require('axios');
 
 module.exports.getImgurLink = async function getImgurLink(base64Data){
     const binaryData = Buffer.from(base64Data, 'base64');

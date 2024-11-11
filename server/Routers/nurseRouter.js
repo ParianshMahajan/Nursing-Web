@@ -1,5 +1,5 @@
 const express=require('express');
-const { createNurse, authenticate, deleteProfile, updateProfile, NurseLogin, NurseLoginPart2, dashboard, getProfile, Requests, acceptRequest, declineRequest, setRequest } = require('../Controllers/NurseFuncs');
+const { createNurse, authenticate, deleteProfile, updateProfile, NurseLogin, NurseLoginPart2, dashboard, getProfile, Requests, acceptRequest, declineRequest, setRequest, updateAvailability } = require('../Controllers/NurseFuncs');
 const { protect } = require('../middlewares/protect');
 const app=express();
 const nurseRouter=express.Router();
@@ -13,8 +13,8 @@ nurseRouter
 .post(createNurse)
 
 nurseRouter.delete('/delete-profile', authenticate, deleteProfile);
-nurseRouter.patch('/update-profile', authenticate, updateProfile);
-
+nurseRouter.put('/update-profile', authenticate, updateProfile);
+nurseRouter.get('/updateAvailability', authenticate, updateAvailability);
 nurseRouter.post('/sendOTP',NurseLogin);
 nurseRouter.post('/verifyOTP',NurseLoginPart2);
 

@@ -64,7 +64,7 @@ export function SignUpNurse() {
 
   const validateForm = () => {
     let newErrors = {};
-    
+
     if (!formData.name) {
       newErrors.name = "Name is required";
     } else if (formData.name.length < 2) {
@@ -126,11 +126,11 @@ export function SignUpNurse() {
       const profilePhoto = formData.profilePhoto;
       const reader = new FileReader();
       reader.onload = async () => {
-        const response = await axios.post( API_URL + '/nurse/create', {
+        const response = await axios.post(API_URL + '/nurse/create', {
           ...formData,
           profilePhoto: reader.result,
         });
-        
+
         if (response.data.token) {
           localStorage.setItem('token', response.data.token);
           setStatusMessage({
@@ -145,7 +145,7 @@ export function SignUpNurse() {
       reader.readAsDataURL(profilePhoto);
     } catch (error) {
       let errorMessage = 'An error occurred during signup';
-      
+
       // Handle specific error cases
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
@@ -169,10 +169,10 @@ export function SignUpNurse() {
     }
   };
 
-  const handleAddressChange = (address) => {
-    setFormData(prev => ({ ...prev, address: address }));
+  const handleAddressChange = ({ coords, address }) => {
+    setFormData(prev => ({ ...prev, address: address, coords: coords }));
     if (errors.address) {
-      setErrors(prev => ({ ...prev, address: '' }));
+      setErrors(prev => ({ ...prev, address: '', coords: { lat: 0, long: 0 } }));
     }
   };
 
@@ -206,13 +206,12 @@ export function SignUpNurse() {
                 id="profilePhoto"
                 type="file"
                 onChange={handleImageChange}
-                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${
-                  errors.profilePhoto ? 'border-red-500' : 'border-teal-200'
-                }`}
+                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${errors.profilePhoto ? 'border-red-500' : 'border-teal-200'
+                  }`}
               />
               {errors.profilePhoto && <p className="text-red-500 text-sm">{errors.profilePhoto}</p>}
               {uploadedImage && (
-                <img 
+                <img
                   src={uploadedImage}
                   alt=""
                   className="mt-2 h-20 w-20 object-cover rounded-full"
@@ -228,9 +227,8 @@ export function SignUpNurse() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${
-                  errors.name ? 'border-red-500' : 'border-teal-200'
-                }`}
+                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${errors.name ? 'border-red-500' : 'border-teal-200'
+                  }`}
                 placeholder="Sita Ram"
               />
               {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
@@ -246,9 +244,8 @@ export function SignUpNurse() {
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={handleChange}
-                  className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${
-                    errors.password ? 'border-red-500' : 'border-teal-200'
-                  }`}
+                  className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${errors.password ? 'border-red-500' : 'border-teal-200'
+                    }`}
                   placeholder="••••••••"
                 />
                 <button
@@ -277,9 +274,8 @@ export function SignUpNurse() {
                   type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${
-                    errors.confirmPassword ? 'border-red-500' : 'border-teal-200'
-                  }`}
+                  className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${errors.confirmPassword ? 'border-red-500' : 'border-teal-200'
+                    }`}
                   placeholder="••••••••"
                 />
                 <button
@@ -307,9 +303,8 @@ export function SignUpNurse() {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${
-                  errors.email ? 'border-red-500' : 'border-teal-200'
-                }`}
+                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${errors.email ? 'border-red-500' : 'border-teal-200'
+                  }`}
                 placeholder="john@example.com"
               />
               {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
@@ -324,9 +319,8 @@ export function SignUpNurse() {
                 type="tel"
                 value={formData.phoneNumber}
                 onChange={handleChange}
-                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${
-                  errors.phoneNumber ? 'border-red-500' : 'border-teal-200'
-                }`}
+                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${errors.phoneNumber ? 'border-red-500' : 'border-teal-200'
+                  }`}
                 placeholder="1234567890"
                 maxLength={10}
               />
@@ -337,9 +331,8 @@ export function SignUpNurse() {
             <div className="space-y-2">
               <Label htmlFor="skilled" className="text-sm font-medium text-teal-700">Skill Level</Label>
               <Select onValueChange={handleSkillChange} value={formData.skilled}>
-                <SelectTrigger className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${
-                  errors.skilled ? 'border-red-500' : 'border-teal-200'
-                }`}>
+                <SelectTrigger className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${errors.skilled ? 'border-red-500' : 'border-teal-200'
+                  }`}>
                   <SelectValue placeholder="Select skill level" />
                 </SelectTrigger>
                 <SelectContent>
@@ -404,7 +397,7 @@ export function SignUpNurse() {
 
             {/* Certificate Links */}
             <div className="space-y-2">
-            <Label htmlFor="certificateLinks" className="text-sm font-medium text-teal-700">Certificate Links</Label>
+              <Label htmlFor="certificateLinks" className="text-sm font-medium text-teal-700">Certificate Links</Label>
               <div className="flex space-x-2">
                 <Input
                   id="certificateLinks"
@@ -468,9 +461,8 @@ export function SignUpNurse() {
                 name="aboutMe"
                 value={formData.aboutMe}
                 onChange={handleChange}
-                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm min-h-[100px] ${
-                  errors.aboutMe ? 'border-red-500' : 'border-teal-200'
-                }`}
+                className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm min-h-[100px] ${errors.aboutMe ? 'border-red-500' : 'border-teal-200'
+                  }`}
                 placeholder="Tell us about yourself, your experience, and your specialties..."
                 rows={4}
               />
@@ -483,9 +475,8 @@ export function SignUpNurse() {
               <div className="w-full">
                 <GoogleMapInput
                   onChange={handleAddressChange}
-                  className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${
-                    errors.address ? 'border-red-500' : 'border-teal-200'
-                  }`}
+                  className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${errors.address ? 'border-red-500' : 'border-teal-200'
+                    }`}
                 />
                 {errors.address && <p className="text-red-500 text-sm">{errors.address}</p>}
               </div>
@@ -505,10 +496,10 @@ export function SignUpNurse() {
             </Button>
 
             {statusMessage.message && (
-            <Alert variant={statusMessage.type === 'error' ? 'destructive' : 'default'}>
-              <AlertDescription>{statusMessage.message}</AlertDescription>
-            </Alert>
-          )}
+              <Alert variant={statusMessage.type === 'error' ? 'destructive' : 'default'}>
+                <AlertDescription>{statusMessage.message}</AlertDescription>
+              </Alert>
+            )}
 
             {/* Login Link */}
             <p className="text-center text-sm text-teal-600 mt-6 pb-10">

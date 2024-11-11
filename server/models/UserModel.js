@@ -1,4 +1,4 @@
-const mongoose  = require("mongoose");
+const mongoose = require("mongoose");
 var validator = require("email-validator");
 require('dotenv').config();
 
@@ -11,69 +11,78 @@ const usersSchema = new Schema({
     Name: {
         type: String
     },
-    Password:{
-        type:String,
-        required:true,
-        minLength:8,
+    Password: {
+        type: String,
+        required: true,
+        minLength: 8,
     },
-    ConfirmPassword:{
-        type:String,
-        required:true,
-        minLength:8,
-        validate:function(){                                                               
+    ConfirmPassword: {
+        type: String,
+        required: true,
+        minLength: 8,
+        validate: function () {
             //Confirming Password....
-            return this.ConfirmPassword==this.Password;
+            return this.ConfirmPassword == this.Password;
         }
     },
-    Email:{
-        type:String,
-        unique:true,
-        validate:function(){
+    Email: {
+        type: String,
+        unique: true,
+        validate: function () {
             return validator.validate(this.Email);
         }
     },
     PhoneNumber: {
-        type: Number    
+        type: Number
     },
-    PreviousRecords:{
-        type:JSON
+    PreviousRecords: {
+        type: JSON
         // format
         // {
         //     nurseContracts:[objectIDs],
         //     homeContracts:[objectIDs],
         // }
     },
-    RequestSent:[{
-        type:Schema.Types.ObjectId,
-        ref:"Requests"
+    RequestSent: [{
+        type: Schema.Types.ObjectId,
+        ref: "Requests"
     }],
-    CurrentLocation:{
-        type:JSON,
+    CurrentLocation: {
+        type: JSON,
     },
-    CurrentContracts:{
-        type:JSON
+    CurrentContracts: {
+        type: JSON
         // format
         // {
         //     nurseContracts:[objectIDs],
         //     homeContracts:[objectIDs],
         // }
     },
-    Address:{
-        type:String, 
+    //address +++
+    Address: {
+        type: String,
     },
-    Report:{
-        type:String,
+    City: {
+        type: String,
+    },
+    Coords: {
+        type: JSON
+    },
+    //address +++
+
+    Report: {
+        type: String,
         // Report on any kind of misbhave of user with nurse
     },
-    Ban:{
-        type:Boolean,
-        default:false,
+    Ban: {
+        type: Boolean,
+        default: false,
     }
 });
 
-    
-usersSchema.pre('save',function(){
-    this.ConfirmPassword=undefined;
+
+usersSchema.pre('save', function () {
+    this.ConfirmPassword = undefined;
 });
 
 

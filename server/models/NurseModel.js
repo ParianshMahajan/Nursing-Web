@@ -19,10 +19,10 @@ const nurseSchema = new Schema({
         type:String,
         required:true,
         // minLength:8,
-        validate: () => {                                                               
-            //Confirming Password....
-            return this.ConfirmPassword==this.Password;
-        }
+        // validate: () => {                                                               
+        //     //Confirming Password....
+        //     return this.ConfirmPassword==this.Password;
+        // }
     },
     AboutMe:{
         type: String
@@ -74,11 +74,17 @@ const nurseSchema = new Schema({
     CurrentLocation:{
         type:JSON,
     },
-
+    //address +++
     Address:{
         type:String, 
     },
-
+    City:{
+        type:String,
+    },
+    Coords:{
+        type:JSON
+    },
+   //address +++
     Rating:{
         type:Number,
         default:0
@@ -93,6 +99,12 @@ const nurseSchema = new Schema({
 
 nurseSchema.pre('save',function(){
     this.ConfirmPassword=undefined;
+});
+
+nurseSchema.index({
+    Name: "text",
+    AboutMe: "text",
+    Skills: "text"
 });
 
 
