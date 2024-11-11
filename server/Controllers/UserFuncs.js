@@ -292,11 +292,14 @@ module.exports.AllRequests = async function AllRequests(req, res) {
             status: false
         })
     }
-
 }
 
 
-// Fetch Requests
+
+
+
+
+
 module.exports.withdrawRequest = async function withdrawRequest(req, res) {
     try {
         let reqid = req.params.id;
@@ -328,6 +331,42 @@ module.exports.withdrawRequest = async function withdrawRequest(req, res) {
         })
     }
 
+}
+
+
+
+
+
+
+module.exports.chatOptionsUser = async function chatOptionsUser(req, res) {
+    try {
+        let user = res.user;
+
+        let requests = await RequestModel.find({ UserId: user._id, Status: 1 })
+        .select('messages NurseId') 
+        .populate({
+          path: 'NurseId',
+          select: 'Name _id'  
+        });        
+        const formattedRequests = requests.map(request => ({
+            messages: request.messages,
+            nurse: {
+              _id: request.NurseId._id,
+              Name: request.NurseId.Name
+            }
+          }));
+
+        res.json({
+            status: true,
+            Requests: formattedRequests,
+        });
+
+    } catch (error) {
+        res.json({
+            message: error.message,
+            status: false
+        })
+    }
 }
 
 

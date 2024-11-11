@@ -10,6 +10,7 @@ const RequestSchema = new Schema({
 
     NurseId: {
         type: Schema.Types.ObjectId,
+        ref:"nurse"
     },
     UserId: {
         type: Schema.Types.ObjectId,
