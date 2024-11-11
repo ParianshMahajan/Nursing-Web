@@ -3,7 +3,12 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 const RequestSchema = new Schema({
-    RecieverId: {
+    messages: [{
+        type: mongoose.Schema.Types.ObjectId,
+        default: [],
+    }],
+
+    NurseId: {
         type: Schema.Types.ObjectId,
     },
     UserId: {
@@ -13,22 +18,25 @@ const RequestSchema = new Schema({
     Reason:{
         type:String,
     },
-    Requirements:{
-        type:JSON
-    },
+    Requirements:[{
+        type:String
+    }],
     Location:{
-        type:JSON,
+        type:String,
     },
-    City:{
+    Address:{
         type:String,
     },
     Status:{
         type:Number,
         default:0,
         // 0 ---> Request Sent
-        // 1 ---> Request Accepted
+        // 1 ---> Request Accepted -- allowed to chat
         // 2 ---> Request Declined
-        // 3 ---> Request Negotiated
+    },
+    AllowedPay:{
+        type:Boolean,
+        default:false,
     },
     Amount:{
         type:Number,

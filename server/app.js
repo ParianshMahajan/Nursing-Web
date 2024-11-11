@@ -2,12 +2,14 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const db = require('./config/DatabaseConfig.js')
 const app = express();
+const dotenv = require("dotenv");
 const session = require('express-session');
 const path = require('path');
 const http = require('http');
 var https = require('https');
 const nurseRouter = require('./Routers/nurseRouter.js');
 
+dotenv.config({ path: "./config.env" });
 
 var cors = require('cors');
 const extraRouter = require('./Routers/extraRouter.js');

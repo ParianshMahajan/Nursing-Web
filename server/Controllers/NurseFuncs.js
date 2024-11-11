@@ -205,8 +205,6 @@ module.exports.NurseLoginPart2 = async function NurseLoginPart2(req, res) {
 module.exports.Requests = async function Requests(req, res) {
   try {
     let nurse = res.nurse;
-
-
     let requests = [];
 
     for (let i in nurse.Requests) {
@@ -217,6 +215,7 @@ module.exports.Requests = async function Requests(req, res) {
       request = {
         ...request,
         ImgUrl: user.ImgUrl,
+        id: user._id,
         Name: user.Name,
         Email: user.Email,
         PhoneNumber: user.PhoneNumber,
@@ -237,8 +236,81 @@ module.exports.Requests = async function Requests(req, res) {
       status: false
     })
   }
-
 }
+
+
+
+module.exports.acceptRequest = async function acceptRequest(req, res) {
+  try {
+    let nurse = res.nurse;
+    let reqid=req.params.id;
+
+    let request = await RequestModel.findById(reqid);
+    request.Status = 1;
+    await request.save();
+
+    res.json({
+      status: true,
+      message:"Request Accepted"
+    });
+
+  } catch (error) {
+    res.json({
+      message: error.message,
+      status: false
+    })
+  }
+}
+
+module.exports.declineRequest = async function declineRequest(req, res) {
+  try {
+    let nurse = res.nurse;
+    let reqid=req.params.id;
+
+    let request = await RequestModel.findById(reqid);
+    request.Status = 2;
+    await request.save();
+
+    res.json({
+      status: true,
+      message:"Request Accepted"
+    });
+
+  } catch (error) {
+    res.json({
+      message: error.message,
+      status: false
+    })
+  }
+}
+
+module.exports.setRequest = async function setRequest(req, res) {
+  try {
+    let nurse = res.nurse;
+    let {reqid,amount,isAllowedPay}=req.body;
+
+    let request = await RequestModel.findById(reqid);
+    request.Amount = amount;
+    request.AllowedPay = isAllowedPay;
+    await request.save();
+
+    res.json({
+      status: true,
+      message:"Request Accepted"
+    });
+
+  } catch (error) {
+    res.json({
+      message: error.message,
+      status: false
+    })
+  }
+}
+
+
+
+
+
 
 
 

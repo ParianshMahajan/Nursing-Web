@@ -223,11 +223,17 @@ module.exports.sendRequest= async function sendRequest(req,res){
             Reason:data.Reason,
             Requirements:data.Requirements,
             Location:data.Location,
-            City:data.City,
-            Status:0,
+            Address:data.Address,
             Duration:data.Duration,
             Amount:data.Amount,
+            Status:0,
         }
+
+        let exist=await RequestModel.findOne({UserId:user._id,NurseId:data.nurseId,Status:0});
+        if(exist){
+        
+        }
+
         let request=await RequestModel.create(requestData);
         user.RequestSent.push(request._id);
         let nurse=await NurseModel.findById(data.nurseId);
@@ -246,34 +252,6 @@ module.exports.sendRequest= async function sendRequest(req,res){
 
 
 
-// Negotiate Request to a nurse
-module.exports.negotiateRequest= async function negotiateRequest(req,res){
-    try{
-        let data=req.body;
-        let user=res.user;
-        let request=await RequestModel.findById(data.requestID);
-        
-        request.Status=3,
-        request.Amount=data.Amount,
-        request.Duration=data.Duration,
-        
-        await request.save();
-        res.json({
-            message:"Request Negotiatation Sent",
-            status:true
-        })
-    }
-    catch(err){
-        res.json({
-            message:err.message
-        })
-    }
-}
-
-
-
-
-
 
 // Fetch Requests
 module.exports.AllRequests= async function AllRequests(req,res){
@@ -284,9 +262,10 @@ module.exports.AllRequests= async function AllRequests(req,res){
             let requestId=user.Requests[i];
             let request=await RequestModel.findById(requestId);
 
-            let nurse=await NurseModel.findById(request.UserId);
+            let nurse=await NurseModel.findById(request.NurseId);
             request={...request,
                     ImgUrl:nurse.ImgUrl,
+                    id:nurse._id,
                     Name:nurse.Name,
                     Email:nurse.Email,
                     PhoneNumber:nurse.PhoneNumber ,
@@ -294,6 +273,41 @@ module.exports.AllRequests= async function AllRequests(req,res){
             };
             requests.push(request);
         }
+
+
+        res.json({
+            status:true,
+            Requests:requests,
+        });
+        
+    } catch (error) {
+        res.json({
+            message:error.message,
+            status:false
+        })
+    }
+        
+}
+
+
+// Fetch Requests
+module.exports.withdrawRequest= async function withdrawRequest(req,res){
+    try {
+        let reqid=req.params.id;
+        let user=res.user;
+
+        let index = user.RequestSent.indexOf(reqid);
+        user.RequestSent.splice(index, 1);
+        await user.save();
+
+        let request=await RequestModel.findById(reqid);
+
+        let nurse=await NurseModel.findById(request.NurseId);
+        let index1 = nurse.Requests.indexOf(reqid);
+        nurse.Requests.splice(index1, 1);
+        await nurse.save();
+
+        await request.deleteOne();
 
 
         res.json({
@@ -323,6 +337,9 @@ module.exports.initialPay= async function initialPay(req,res){
         
         let user=res.user;
         let request=await RequestModel.findById(data.requestID);
+        if(request.AllowedPay==false){
+            throw new Error("Payment not allowed");
+        }
         let nurse=await NurseModel.findById(data.nurseID);
 
         // Calculating amount to be paid
