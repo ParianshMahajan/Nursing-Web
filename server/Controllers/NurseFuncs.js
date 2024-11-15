@@ -317,6 +317,37 @@ module.exports.setRequest = async function setRequest(req, res) {
 }
 
 
+module.exports.chatOptionsNurse = async function chatOptionsNurse(req, res) {
+  try {
+      let nurse = res.nurse;
+
+      let requests = await RequestModel.find({ NurseId: nurse._id, Status: 1 })
+      .select('messages UserId') 
+      .populate({
+        path: 'UserId',
+        select: 'Name _id'  
+      });        
+      const formattedRequests = requests.map(request => ({
+          messages: request.messages,
+          user: {
+            _id: request.UserId._id,
+            Name: request.UserId.Name
+          }
+        }));
+
+      res.json({
+          status: true,
+          Requests: formattedRequests,
+      });
+
+  } catch (error) {
+      res.json({
+          message: error.message,
+          status: false
+      })
+  }
+}
+
 
 
 
