@@ -40,16 +40,25 @@ startRoutes();
 
 io.on("connection", (socket) => {
   console.log("New client connected");
-  socket.on("joinRoom", async ({ userId, nurseId }) => {
+  socket.on("joinRoom", async ({ userId, nurseId,token }) => {
       const request = await Request.findOne({
           UserId: userId,
           NurseId: nurseId,
           Status: 1 // only accepted requests
       });
-
       if (request) {
           const roomId = `${userId}-${nurseId}`;
           socket.join(roomId);
+          if(token){
+            const auth = await authModel.findOne({ SessionID, token });
+            if(!auth){
+              socket.emit("error", "Session expired or invalid");
+            }
+          }else
+          {
+            socket.emit("error", "No token provided");
+          }
+
           socket.emit("roomJoined", { success: true, roomId });
       } else {
           socket.emit("roomJoined", { success: false, message: "No active request found between user and nurse." });
