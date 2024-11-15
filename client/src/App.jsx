@@ -12,6 +12,7 @@ import Footer from './Pages/Components/Footer/Footer';
 import { SignUpNurse } from './Pages/SignUp/nurse-signup-form';
 import { SignUpUser } from './Pages/SignUp/user-signup-form';
 import { AuthProvider } from './api/auth';
+import NurseProfileUser from './Pages/NurseProfile/NurseProfileUser';
 
 function App() {
   return (
@@ -23,7 +24,8 @@ function App() {
             {/* Good */}
             <Route path="/" element={<Home />}></Route>
             <Route path="/search" element={<SearchResults />}></Route>
-            <Route path="/nurse/:id" element={<NurseProfile />}></Route>
+            <Route path="/nurse/dashboard" element={<NurseProfile />}></Route>
+            <Route path="/nurseProfile/:id" element={<NurseProfileUser />}></Route>
             <Route path="/login/:type" element={<Login />}></Route>
             {/* <Route path="/signup" element={<SignUp/>}></Route> */}
             <Route path="/signup/nurse" element={<SignUpNurse />}></Route>

@@ -214,6 +214,23 @@ module.exports.UserLoginPart2 = async function UserLoginPart2(req, res) {
 
 
 
+//Get Nurse Profile By Id 
+module.exports.getNurseProfile = async function getNurseProfile(req, res) {
+    try {
+        let id = req.params.id;
+        let nurse = await NurseModel.findById(id);
+        res.json({
+            status: true,
+            nurse: nurse
+        });
+    } catch (error) {
+        res.json({
+            message: error.message,
+            status: false
+        })
+    }
+}
+
 
 
 

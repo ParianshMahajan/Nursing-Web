@@ -110,7 +110,7 @@ const NurseProfile = () => {
                                 </div>
                             </div>
                         </div>
-                    </CardHeader>
+                    </CardHeader>   
 
                     <CardContent className="p-6">
                         <div className="space-y-8">

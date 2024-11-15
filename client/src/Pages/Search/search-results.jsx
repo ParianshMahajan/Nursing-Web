@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Star, MapPin, Clock } from "lucide-react"
 import { API_URL } from '@/api/config'
+import { Link } from 'react-router-dom'
 
 export function SearchResults() {
   const [professionals, setProfessionals] = useState([])
@@ -225,7 +226,9 @@ export function SearchResults() {
                         className="mt-2 bg-sky-700 text-white hover:bg-sky-800"
                         disabled={!pro.IsAvailable}
                       >
-                        {pro.IsAvailable ? 'CONNECT' : 'UNAVAILABLE'}
+                        
+
+                        {pro.IsAvailable ? <Link to={`/nurseProfile/${pro._id}`}>View Profile</Link> : 'UNAVAILABLE'}
                       </Button>
                     </div>
                   </div>

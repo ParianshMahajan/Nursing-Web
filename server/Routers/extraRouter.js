@@ -1,11 +1,11 @@
 const express = require('express');
-const { authenticate } = require('../Controllers/NurseFuncs');
 const { getAllCities, getNursesByCity } = require('../Controllers/CommonFuncs');
+const { protect } = require('../middlewares/protect');
 const app = express();
 const extraRouter = express.Router();
 
 
-extraRouter.get('/verifyAuthToken', authenticate, (req, res) => {
+extraRouter.get('/verifyAuthToken', protect, (req, res) => {
     if (req.nurse) {
         res.status(200).send({ ...req.nurse, authorized: true });
     }
@@ -19,6 +19,7 @@ extraRouter.get('/verifyAuthToken', authenticate, (req, res) => {
 
 extraRouter.get('/getCities', getAllCities);
 extraRouter.post('/getNursesByCity', getNursesByCity);
+
 
 
 module.exports = extraRouter;

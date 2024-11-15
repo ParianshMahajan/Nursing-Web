@@ -5,83 +5,99 @@ const secret_key=process.env.secret_key;
 const jwt=require('jsonwebtoken');
 const UserModel = require("../models/UserModel");
 const NurseModel = require("../models/NurseModel");
+const authModel = require("../models/authModel");
 
-module.exports.protect= async function protect(req,res,next){
+module.exports.protect = async function protect(req, res, next) {
     try {
-
         const authHeader = req.headers.authorization;
-        if (!authHeader?.startsWith('Bearer ')) {
-          return res.status(401).json({
-            status: false,
-            message: 'Authorization header missing or invalid format'
-          });
+        
+        // Check for Bearer token format
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({
+                status: false,
+                message: 'Authorization header missing or invalid format'
+            });
         }
-      
+
         const token = authHeader.split(' ')[1];
 
+        // Retrieve IP address
         const ip =
-        req.headers['x-forwarded-for'] ||
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress;
+            req.headers['x-forwarded-for'] ||
+            req.connection.remoteAddress ||
+            req.socket.remoteAddress ||
+            req.connection.socket?.remoteAddress;
 
-        if(token){
-            
-            let auth= await authModel.findOne({SessionID:token,IPV4:ip});
-            
-            if(auth){
-                let payload=jwt.verify(token,secret_key);               
-                if(payload){
-                    if(payload.Role=="User"){
-                        let user= await UserModel.findById(payload.uuid);      
-                        if(!user){
-                            throw new Error("Invalid token");
-                        }
-                        if(user.Ban==false){
-                            res.user=user;
-                            next();
-                        }
-                        else{
-                            throw new Error("Blocked By admin");
-                        }
-                    }
-
-                    else if(payload.Role=="Nurse"){
-                        let nurse= await NurseModel.findById(payload.uuid);
-                        if(!nurse){
-                            throw new Error("Invalid token");
-                        }
-                        if(nurse.Ban==false){
-                            res.nurse=nurse;
-                            next();
-                        }
-                        else{
-                            throw new Error("Blocked By admin");
-                        }              
-                    }
-
-                    else{
-                        throw new Error("Unauthorised");
-                    }
-                }
-                else{
-                    throw new Error("Invalid token");
-                }
-            }
-            else{
-                throw new Error("Session Expired");
-            }
-        }
-        else{
-            throw new Error("No token provided");
+        if (!token) {
+            return res.status(401).json({
+                status: false,
+                message: 'No token provided'
+            });
         }
 
-        
-    }catch (error) {
+        // Find session by token and IP
+        const auth = await authModel.findOne({ SessionID: token, IPV4: ip });
+        if (!auth) {
+            return res.status(401).json({
+                status: false,
+                message: 'Session expired or invalid'
+            });
+        }
+
+        // Verify the token
+        let payload;
+        try {
+            payload = jwt.verify(token, secret_key);
+        } catch (error) {
+            return res.status(401).json({
+                status: false,
+                message: 'Invalid token'
+            });
+        }
+
+        // Check user role and validity
+        if (payload.Role === "User") {
+            const user = await UserModel.findById(payload.uuid);
+            if (!user) {
+                return res.status(404).json({
+                    status: false,
+                    message: 'User not found'
+                });
+            }
+            if (user.Ban) {
+                return res.status(403).json({
+                    status: false,
+                    message: 'User blocked by admin'
+                });
+            }
+            res.user = user;
+            next();
+        } else if (payload.Role === "Nurse") {
+            const nurse = await NurseModel.findById(payload.uuid);
+            if (!nurse) {
+                return res.status(404).json({
+                    status: false,
+                    message: 'Nurse not found'
+                });
+            }
+            if (nurse.Ban) {
+                return res.status(403).json({
+                    status: false,
+                    message: 'Nurse blocked by admin'
+                });
+            }
+            res.nurse = nurse;
+            next();
+        } else {
+            return res.status(403).json({
+                status: false,
+                message: 'Unauthorized role'
+            });
+        }
+    } catch (error) {
         res.status(500).json({
-            message:error.message,
-            status:false
-        })
+            status: false,
+            message: error.message
+        });
     }
-}
-
+};

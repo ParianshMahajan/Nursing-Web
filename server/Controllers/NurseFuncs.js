@@ -322,34 +322,6 @@ module.exports.setRequest = async function setRequest(req, res) {
 
 
 
-
-
-module.exports.authenticate = (req, res, next) => {
-
-  const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({
-      status: false,
-      message: 'Authorization header missing or invalid format'
-    });
-  }
-
-  const token = authHeader.split(' ')[1];
-
-  if (token) {
-    jwt.verify(token, secret_key, (err, decoded) => {
-      if (err) {
-        res.status(401).json({ message: 'Invalid token ' + err });
-      } else {
-        req.nurse = decoded;
-        next();
-      }
-    });
-  } else {
-    res.status(401).json({ message: 'No token provided' });
-  }
-}
-
 module.exports.dashboard = (req, res) => {
   NurseModel.findById(req.nurse.uuid, (err, nurse) => {
     if (err) {
