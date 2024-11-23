@@ -8,6 +8,7 @@ const path = require('path');
 const http = require('http');
 var https = require('https');
 const nurseRouter = require('./Routers/nurseRouter.js');
+const Message = require('./models/messageModel.js');
 
 const server = http.createServer(app);
 const { Server } = require("socket.io");
