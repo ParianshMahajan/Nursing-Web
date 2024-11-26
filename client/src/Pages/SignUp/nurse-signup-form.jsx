@@ -10,6 +10,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { API_URL } from '@/api/config';
+import OpenStreetMapInput from '@/components/OpenStreetMapInput';
 
 export function SignUpNurse() {
   const navigate = useNavigate();
@@ -473,7 +474,7 @@ export function SignUpNurse() {
             <div className="space-y-2">
               <Label htmlFor="address" className="text-sm font-medium text-teal-700">Address</Label>
               <div className="w-full">
-                <GoogleMapInput
+                <OpenStreetMapInput
                   onChange={handleAddressChange}
                   className={`px-4 py-2.5 rounded-lg border focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/50 backdrop-blur-sm ${errors.address ? 'border-red-500' : 'border-teal-200'
                     }`}

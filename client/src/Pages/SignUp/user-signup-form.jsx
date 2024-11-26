@@ -8,6 +8,7 @@ import GoogleMapInput from '@/components/GoogleMapInput';
 import axios from 'axios';
 import { API_URL } from '@/api/config';
 import { AuthContext } from '@/api/auth';
+import OpenStreetMapInput from '@/components/OpenStreetMapInput';
 
 export function SignUpUser() {
   const [formData, setFormData] = useState({
@@ -286,7 +287,7 @@ export function SignUpUser() {
             {/* Address Input */}
             <div className="space-y-2">
               <Label htmlFor="address" className="text-sm font-medium text-teal-700">Address</Label>
-              <GoogleMapInput
+              <OpenStreetMapInput
               onChange={handleAddressChange}
               />
             </div>
