@@ -11,7 +11,6 @@ module.exports.protect = async function protect(req, res, next) {
     try {
         const authHeader = req.headers.authorization;
         
-        // Check for Bearer token format
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return res.status(401).json({
                 status: false,
@@ -20,14 +19,6 @@ module.exports.protect = async function protect(req, res, next) {
         }
 
         const token = authHeader.split(' ')[1];
-
-        // Retrieve IP address
-        const ip =
-            req.headers['x-forwarded-for'] ||
-            req.connection.remoteAddress ||
-            req.socket.remoteAddress ||
-            req.connection.socket?.remoteAddress;
-
         if (!token) {
             return res.status(401).json({
                 status: false,
@@ -35,27 +26,44 @@ module.exports.protect = async function protect(req, res, next) {
             });
         }
 
-        // Find session by token and IP
-        const auth = await authModel.findOne({ SessionID: token, IPV4: ip });
-        if (!auth) {
-            return res.status(401).json({
-                status: false,
-                message: 'Session expired or invalid'
-            });
-        }
-
-        // Verify the token
+        // Verify the token first
         let payload;
         try {
             payload = jwt.verify(token, secret_key);
         } catch (error) {
+            if (error.name === 'TokenExpiredError') {
+                return res.status(401).json({
+                    status: false,
+                    message: 'Token has expired'
+                });
+            }
             return res.status(401).json({
                 status: false,
                 message: 'Invalid token'
             });
         }
 
-        // Check user role and validity
+        // Find valid session
+        const auth = await authModel.findOne({ SessionID: token });
+        if (!auth) {
+            return res.status(401).json({
+                status: false,
+                message: 'Session not found'
+            });
+        }
+
+        // Update IP if changed
+        const ip = req.headers['x-forwarded-for'] || 
+                  req.connection.remoteAddress || 
+                  req.socket.remoteAddress || 
+                  req.connection.socket?.remoteAddress;
+
+        if (auth.IPV4 !== ip) {
+            auth.IPV4 = ip;
+            await auth.save();
+        }
+
+        // Check user existence and status based on role
         if (payload.Role === "User") {
             const user = await UserModel.findById(payload.uuid);
             if (!user) {
@@ -67,10 +75,10 @@ module.exports.protect = async function protect(req, res, next) {
             if (user.Ban) {
                 return res.status(403).json({
                     status: false,
-                    message: 'User blocked by admin'
+                    message: 'User is banned'
                 });
             }
-            res.user = user;
+            req.user = user;
             next();
         } else if (payload.Role === "Nurse") {
             const nurse = await NurseModel.findById(payload.uuid);
@@ -83,21 +91,23 @@ module.exports.protect = async function protect(req, res, next) {
             if (nurse.Ban) {
                 return res.status(403).json({
                     status: false,
-                    message: 'Nurse blocked by admin'
+                    message: 'Nurse is banned'
                 });
             }
-            res.nurse = nurse;
+            req.nurse = nurse;
             next();
         } else {
             return res.status(403).json({
                 status: false,
-                message: 'Unauthorized role'
+                message: 'Invalid role'
             });
         }
     } catch (error) {
+        console.error('Auth error:', error);
         res.status(500).json({
             status: false,
-            message: error.message
+            message: 'Internal server error',
+            error: error.message
         });
     }
 };

@@ -7,6 +7,7 @@ const navItems = [
   { name: "Home", link: "/" },
   { name: "About", link: "/about" },
   { name: "Find Nurses", link: "/search" },
+  { name: "Find Apartments", link: "/apartments" },
   { name: "Contact Us", link: "/contact" }
 ];
 
@@ -64,27 +65,41 @@ export function Navbar() {
         {/* Action Buttons */}
         <div className="flex items-center gap-4">
           {/* Desktop Login Button */}
-          {token ? (
+          {!token ? (
             <>
-              {/* <Link
-                to="/"
-                className="hidden md:inline-flex items-center justify-center px-6 py-2.5 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+              <Link
+                to="/login/user"
+                className="text-sm font-medium text-gray-700 hover:text-gray-900"
               >
-                Dashboard
-              </Link> */}
-              <button onClick={() => { logout() }} className="hidden md:inline-flex items-center justify-center px-6 py-2.5 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
-                Logout
-              </button>
+                User Login
+              </Link>
+              <Link
+                to="/login/nurse"
+                className="text-sm font-medium text-gray-700 hover:text-gray-900"
+              >
+                Nurse Login
+              </Link>
+              <Link
+                to="/login/apartment"
+                className="text-sm font-medium text-gray-700 hover:text-gray-900"
+              >
+                Apartment Login
+              </Link>
             </>
           ) : (
             <>
               <Link
-                to="/login/user"
-                className="hidden md:inline-flex items-center justify-center px-6 py-2.5 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                to="/dashboard"
+                className="text-sm font-medium text-gray-700 hover:text-gray-900"
               >
-                Login
+                Dashboard
               </Link>
-
+              <button
+                onClick={logout}
+                className="text-sm font-medium text-gray-700 hover:text-gray-900"
+              >
+                Logout
+              </button>
             </>
           )}
 
@@ -107,28 +122,41 @@ export function Navbar() {
                   </Link>
                 ))}
 
-                {token ? (
-                  <>
-                    {/* <Link
-                      to="/"
-                      className="mt-4 inline-flex items-center justify-center px-6 py-3 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
-                    >
-                      Dashboard
-                    </Link> */}
-                    <button onClick={() => { logout() }} className="mt-4 inline-flex items-center justify-center px-6 py-3 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
-                      Logout
-                    </button>
-                  </>
-                ) : (
+                {!token ? (
                   <>
                     <Link
                       to="/login/user"
                       className="mt-4 inline-flex items-center justify-center px-6 py-3 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
                     >
-                      Login
+                      User Login
                     </Link>
-
-
+                    <Link
+                      to="/login/nurse"
+                      className="mt-4 inline-flex items-center justify-center px-6 py-3 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                    >
+                      Nurse Login
+                    </Link>
+                    <Link
+                      to="/login/apartment"
+                      className="mt-4 inline-flex items-center justify-center px-6 py-3 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                    >
+                      Apartment Login
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/dashboard"
+                      className="mt-4 inline-flex items-center justify-center px-6 py-3 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                    >
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={logout}
+                      className="mt-4 inline-flex items-center justify-center px-6 py-3 font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+                    >
+                      Logout
+                    </button>
                   </>
                 )}
 

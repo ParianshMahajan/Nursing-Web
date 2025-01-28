@@ -65,76 +65,57 @@ const Login = () => {
     }
   };
 
-  // Handle login attempt
-  const handleLogin = async (e) => {
+  // Handle send OTP
+  const handleSendOTP = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setIsLoading(true);
-    setStatusMessage({ type: '', message: '' });
-
     try {
-      const response = await axios.post(`${API_URL}/${type}/sendOTP`, {
+      const endpoint = type === 'nurse' ? 'nurse/login' : 
+                      type === 'apartment' ? 'apartment/login' : 'user/login';
+      const response = await axios.post(`${API_URL}/${endpoint}`, {
         Email: formData.email,
         Password: formData.password
       });
-      
+
       if (response.data.status) {
         setIsOTPSent(true);
-        setStatusMessage({ 
-          type: 'success', 
-          message: response.data.message || 'OTP sent successfully' 
-        });
-      } else {
-        setStatusMessage({ 
-          type: 'error', 
-          message: response.data.message || 'Failed to send OTP' 
-        });
+        setStatusMessage({ type: 'success', message: 'OTP sent successfully!' });
       }
     } catch (error) {
-      setStatusMessage({ 
-        type: 'error', 
-        message: error.response?.data?.message || 'An error occurred. Please try again.' 
+      setStatusMessage({
+        type: 'error',
+        message: error.response?.data?.message || 'Failed to send OTP'
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handle OTP verification
-  const handleVerifyOTP = async (e) => {
+  // Handle login attempt
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setIsLoading(true);
-    setStatusMessage({ type: '', message: '' });
-
     try {
-      const response = await axios.post(`${API_URL}/${type}/verifyOTP`, {
+      const endpoint = type === 'nurse' ? 'nurse/login2' : 
+                      type === 'apartment' ? 'apartment/login2' : 'user/login2';
+      const response = await axios.post(`${API_URL}/${endpoint}`, {
         Email: formData.email,
-        Password: formData.password,
         OTP: formData.otp
       });
-      
+
       if (response.data.status) {
         setToken(response.data.token);
-        setStatusMessage({
-          type: 'success', 
-          message: 'Login successful. Redirecting...' 
-        });
-        setTimeout(() => {
-          window.location.href = '/dashboard';
-        }, 1500);
-      } else {
-        setStatusMessage({ 
-          type: 'error', 
-          message: 'Invalid OTP. Please try again.' 
-        });
+        window.location.href = type === 'nurse' ? '/nurse/dashboard' : 
+                             type === 'apartment' ? '/apartment/dashboard' : '/user/dashboard';
       }
     } catch (error) {
-      setStatusMessage({ 
-        type: 'error', 
-        message: error.response?.data?.message || 'Failed to verify OTP' 
+      setStatusMessage({
+        type: 'error',
+        message: error.response?.data?.message || 'Login failed'
       });
     } finally {
       setIsLoading(false);
@@ -160,7 +141,8 @@ const Login = () => {
         <div className="w-full max-w-md space-y-6">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-teal-800">
-              {type.toUpperCase()} LOGIN
+              {type === 'nurse' ? 'Nurse Login' : 
+               type === 'apartment' ? 'Apartment Owner Login' : 'User Login'}
             </h2>
           </div>
 
@@ -172,7 +154,7 @@ const Login = () => {
             </Alert>
           )}
 
-          <form onSubmit={isOTPSent ? handleVerifyOTP : handleLogin} className="space-y-6 w-[70%] mx-auto">
+          <form onSubmit={isOTPSent ? handleLogin : handleSendOTP} className="space-y-6 w-[70%] mx-auto">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-teal-700">
                 Email
@@ -257,14 +239,15 @@ const Login = () => {
               {isLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
-                isOTPSent ? "VERIFY OTP" : "LOGIN"
+                isOTPSent ? "VERIFY OTP" : "SEND OTP"
               )}
             </button>
 
             <p className="text-center text-sm text-teal-600">
               Don't have an account?{" "}
               <Link
-                to={`/signup/${type}`}
+                to={type === 'nurse' ? '/signup/nurse' : 
+                    type === 'apartment' ? '/signup/apartment' : '/signup/user'}
                 className="font-medium text-teal-700 hover:text-teal-800 underline"
               >
                 Sign Up

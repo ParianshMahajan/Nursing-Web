@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const Schema = mongoose.Schema;
 const RequestSchema = new Schema({
     messages: [{
@@ -10,43 +9,57 @@ const RequestSchema = new Schema({
 
     NurseId: {
         type: Schema.Types.ObjectId,
-        ref:"nurse"
+        ref: "nurse"
+    },
+    ApartmentId: {
+        type: Schema.Types.ObjectId,
+        ref: "apartment"
     },
     UserId: {
         type: Schema.Types.ObjectId,
         ref: "user"
     },
-    Reason:{
-        type:String,
+    RequestType: {
+        type: String,
+        enum: ['nurse', 'apartment'],
+        required: true
     },
-    Requirements:[{
-        type:String
+    Reason: {
+        type: String,
+    },
+    Requirements: [{
+        type: String
     }],
-    Location:{
-        type:String,
+    Location: {
+        type: String,
     },
-    Address:{
-        type:String,
+    Address: {
+        type: String,
     },
-    Status:{
-        type:Number,
-        default:0,
+    Status: {
+        type: Number,
+        default: 0,
         // 0 ---> Request Sent
         // 1 ---> Request Accepted -- allowed to chat
         // 2 ---> Request Declined
     },
-    AllowedPay:{
-        type:Boolean,
-        default:false,
+    AllowedPay: {
+        type: Boolean,
+        default: false,
     },
-    Amount:{
-        type:Number,
+    Amount: {
+        type: Number,
     },
-    Duration:{
-        type:Number,
+    Duration: {
+        type: Number,
         // no. of Days
     },
+    CheckInDate: {
+        type: Date
+    },
+    CheckOutDate: {
+        type: Date
+    }
 });
-
 
 module.exports = mongoose.model("Requests", RequestSchema);

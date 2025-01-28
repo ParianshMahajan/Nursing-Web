@@ -88,4 +88,5 @@ function startRoutes(){
   app.use('/user',require('./Routers/userRouter.js'));
   app.use('/nurse',nurseRouter);
   app.use('/extra',extraRouter);
+  app.use('/contact',require('./Routers/contactRouter.js'));
 }

@@ -228,15 +228,136 @@ module.exports.ApartmentLoginPart2= async function ApartmentLoginPart2(req,res){
         
 // }
 
+// Get all apartments
+module.exports.getAllApartments = async function getAllApartments(req, res) {
+    try {
+        const apartments = await ApartmentModel.find();
+        res.status(200).json({
+            status: 'success',
+            data: apartments
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: 'error',
+            message: err.message
+        });
+    }
+};
 
+// Get apartment by ID
+module.exports.getApartmentById = async function getApartmentById(req, res) {
+    try {
+        const apartment = await ApartmentModel.findById(req.params.id);
+        if (!apartment) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Apartment not found'
+            });
+        }
+        res.status(200).json({
+            status: 'success',
+            data: apartment
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: 'error',
+            message: err.message
+        });
+    }
+};
 
+// Create apartment booking request
+module.exports.createBookingRequest = async function createBookingRequest(req, res) {
+    try {
+        const { apartmentId, userId, checkInDate, checkOutDate, requirements } = req.body;
 
+        // Validate apartment exists
+        const apartment = await ApartmentModel.findById(apartmentId);
+        if (!apartment) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Apartment not found'
+            });
+        }
 
+        // Create booking request
+        const request = await RequestModel.create({
+            ApartmentId: apartmentId,
+            UserId: userId,
+            RequestType: 'apartment',
+            Requirements: requirements,
+            CheckInDate: new Date(checkInDate),
+            CheckOutDate: new Date(checkOutDate),
+            Amount: apartment.Price,
+            Status: 0
+        });
 
+        // Update user's RequestSent array
+        await UserModel.findByIdAndUpdate(userId, {
+            $push: { RequestSent: request._id }
+        });
 
+        // Update apartment's Requests array
+        await ApartmentModel.findByIdAndUpdate(apartmentId, {
+            $push: { Requests: request._id }
+        });
 
+        res.status(201).json({
+            status: 'success',
+            data: request
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: 'error',
+            message: err.message
+        });
+    }
+};
 
+// Update booking request status
+module.exports.updateBookingStatus = async function updateBookingStatus(req, res) {
+    try {
+        const { requestId, status } = req.body;
 
+        const request = await RequestModel.findByIdAndUpdate(requestId, {
+            Status: status
+        }, { new: true });
 
+        if (!request) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Request not found'
+            });
+        }
 
+        res.status(200).json({
+            status: 'success',
+            data: request
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: 'error',
+            message: err.message
+        });
+    }
+};
 
+// Get apartment owner's booking requests
+module.exports.getApartmentRequests = async function getApartmentRequests(req, res) {
+    try {
+        const requests = await RequestModel.find({
+            ApartmentId: req.params.apartmentId,
+            RequestType: 'apartment'
+        }).populate('UserId');
+
+        res.status(200).json({
+            status: 'success',
+            data: requests
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: 'error',
+            message: err.message
+        });
+    }
+};

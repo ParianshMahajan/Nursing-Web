@@ -10,6 +10,8 @@ const cron = require('node-cron');
 
 
 
+
+
 function capitalizeKeys(obj) {
     return Object.keys(obj).reduce((acc, key) => {
         const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
@@ -68,6 +70,7 @@ module.exports.createUser = async function createUser(req, res) {
             uuid: user._id,
             Role: 'User',
             IPV4: ip,
+            exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // Token expires in 24 hours
         }
 
         const token = jwt.sign(payload, secret_key);
@@ -147,65 +150,70 @@ module.exports.UserLogin = async function UserLogin(req, res) {
 //   OTP and JWT generation
 module.exports.UserLoginPart2 = async function UserLoginPart2(req, res) {
     try {
-        let data = req.body;
-        let user = await UserModel.findOne({ Email: req.body.Email });
+        const { Email, Password, OTP } = req.body;
+        const user = await UserModel.findOne({ Email });
 
-        if (user) {
-            if (data.Password === user.Password) {
-
-                let auth = await authModel.findOne({ UserID: user._id });
-
-                if (auth.OTP === data.OTP) {
-
-                    const ip =
-                        req.headers['x-forwarded-for'] ||
-                        req.connection.remoteAddress ||
-                        req.socket.remoteAddress ||
-                        req.connection.socket.remoteAddress;
-
-                    const payload = {
-                        uuid: user._id,
-                        Role: "User",
-                        IPV4: ip,
-                    }
-                    const token = jwt.sign(payload, secret_key);
-
-                    auth.SessionID = token;
-                    auth.timestamp = Date.now();
-                    auth.IPV4 = ip;
-                    auth.OTP = undefined;
-                    await auth.save();
-
-                    res.json({
-                        status: true,
-                        token: token,
-                    });
-                }
-                else {
-                    res.json({
-                        status: false,
-                        message: "Incorrect OTP",
-                    });
-                }
-            }
-            else {
-                res.json({
-                    status: false,
-                    message: "Incorrect password"
-                });
-            }
-        }
-        else {
-            res.json({
+        if (!user) {
+            return res.json({
                 status: false,
-                message: "User does not exits"
+                message: "User does not exist"
             });
         }
 
+        if (Password !== user.Password) {
+            return res.json({
+                status: false,
+                message: "Incorrect password"
+            });
+        }
+
+        const auth = await authModel.findOne({ UserID: user._id });
+        
+        if (!auth || auth.OTP !== OTP) {
+            return res.json({
+                status: false,
+                message: "Invalid OTP"
+            });
+        }
+
+        const ip = req.headers['x-forwarded-for'] || 
+                  req.connection.remoteAddress || 
+                  req.socket.remoteAddress || 
+                  req.connection.socket?.remoteAddress;
+
+        const payload = {
+            uuid: user._id,
+            Role: "User",
+            IPV4: ip,
+            exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 hours
+        };
+
+        const token = jwt.sign(payload, secret_key);
+
+        // Update auth record
+        auth.SessionID = token;
+        auth.timestamp = Date.now();
+        auth.IPV4 = ip;
+        auth.OTP = undefined;
+        await auth.save();
+
+        res.json({
+            status: true,
+            token: token,
+            user: {
+                _id: user._id,
+                Name: user.Name,
+                Email: user.Email
+            }
+        });
+
     } catch (error) {
+        console.error('Login error:', error);
         res.status(500).json({
-            message: error.message
-        })
+            status: false,
+            message: "Internal server error",
+            error: error.message
+        });
     }
 }
 
@@ -238,7 +246,7 @@ module.exports.getNurseProfile = async function getNurseProfile(req, res) {
 module.exports.sendRequest = async function sendRequest(req, res) {
     try {
         let data = req.body;
-        let user = res.user;
+        let user = req.user;
         let requestData = {
             UserId: user._id,
             NurseId: data.nurseId,
@@ -278,39 +286,54 @@ module.exports.sendRequest = async function sendRequest(req, res) {
 // Fetch Requests
 module.exports.AllRequests = async function AllRequests(req, res) {
     try {
-        let user = res.user;
-        let requests = [];
-        for (let i in user.Requests) {
-            let requestId = user.Requests[i];
-            let request = await RequestModel.findById(requestId);
+        let user = req.user;
+        
+        // Find all requests for this user and populate nurse info
+        const requests = await RequestModel.find({ 
+            UserId: user._id 
+        }).populate({
+            path: 'NurseId',
+            select: 'ImgUrl Name Email PhoneNumber Address'
+        });
 
-            let nurse = await NurseModel.findById(request.NurseId);
-            request = {
-                ...request,
-                ImgUrl: nurse.ImgUrl,
-                id: nurse._id,
-                Name: nurse.Name,
-                Email: nurse.Email,
-                PhoneNumber: nurse.PhoneNumber,
-                Address: nurse.Address,
+        // Format the response
+        const formattedRequests = requests.map(request => {
+            const nurse = request.NurseId;
+            return {
+                _id: request._id,
+                reason: request.Reason,
+                requirements: request.Requirements,
+                location: request.Location,
+                address: request.Address,
+                status: request.Status,
+                allowedPay: request.AllowedPay,
+                amount: request.Amount,
+                duration: request.Duration,
+                messages: request.messages,
+                nurseInfo: {
+                    _id: nurse._id,
+                    imgUrl: nurse.ImgUrl,
+                    name: nurse.Name,
+                    email: nurse.Email,
+                    phoneNumber: nurse.PhoneNumber,
+                    address: nurse.Address
+                }
             };
-            requests.push(request);
-        }
-
+        });
 
         res.json({
             status: true,
-            Requests: requests,
+            requests: formattedRequests
         });
 
     } catch (error) {
-        res.json({
+        console.error('Error in AllRequests:', error);
+        res.status(500).json({
             message: error.message,
             status: false
-        })
+        });
     }
 }
-
 
 
 
@@ -320,7 +343,7 @@ module.exports.AllRequests = async function AllRequests(req, res) {
 module.exports.withdrawRequest = async function withdrawRequest(req, res) {
     try {
         let reqid = req.params.id;
-        let user = res.user;
+        let user = req.user;
 
         let index = user.RequestSent.indexOf(reqid);
         user.RequestSent.splice(index, 1);
@@ -710,15 +733,14 @@ module.exports.test = async function test(req, res) {
 }
 
 
-
 module.exports.getProfile = async (req, res) => {
     try {
-        const user = await UserModel.findById(req.user.uuid);
+        const user = await UserModel.findById(req.user.id);
 
         if (!user) {
             return res.status(404).json({
                 success: false,
-                message: 'Nurse not found'
+                message: 'User not found'
             });
         }
 
@@ -729,7 +751,7 @@ module.exports.getProfile = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            message: 'Error retrieving nurse profile',
+            message: 'Error retrieving user profile',
             error: error.message
         });
     }

@@ -9,73 +9,22 @@ import { AuthContext } from '@/api/auth';
 import axios from 'axios';
 import { API_URL } from '@/api/config';
 import toast from 'react-hot-toast';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogFooter,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 
-const NurseProfileUser = () => {
+const ViewNurseProfile = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { token } = useContext(AuthContext);
     const [nurseData, setNurseData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [requesting, setRequesting] = useState(false);
-    const [showRequestModal, setShowRequestModal] = useState(false);
-    const [requestForm, setRequestForm] = useState({
-        reason: '',
-        requirements: [],
-        location: '',
-        address: '',
-        duration: ''
-    });
-    const [newRequirement, setNewRequirement] = useState('');
 
     useEffect(() => {
         getNurseData();
     }, [id]);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setRequestForm(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    const addRequirement = () => {
-        if (newRequirement.trim()) {
-            setRequestForm(prev => ({
-                ...prev,
-                requirements: [...prev.requirements, newRequirement.trim()]
-            }));
-            setNewRequirement('');
-        }
-    };
-
-    const removeRequirement = (index) => {
-        setRequestForm(prev => ({
-            ...prev,
-            requirements: prev.requirements.filter((_, i) => i !== index)
-        }));
-    };
-
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            addRequirement();
-        }
-    };
-
     const getNurseData = async () => {
         try {
-            const response = await axios.get(`${API_URL}/user/getNurseProfile/${id}`);
+            const response = await axios.get(`${API_URL}/user/nurse-profile/${id}`);
             if (response.data.status) {
                 setNurseData(response.data.nurse);
             } else {
@@ -95,42 +44,17 @@ const NurseProfileUser = () => {
             navigate('/login');
             return;
         }
-        setShowRequestModal(true);
-    };
-
-    const submitRequest = async () => {
-        if (!requestForm.reason || !requestForm.location || !requestForm.address || !requestForm.duration) {
-            toast.error('Please fill all required fields');
-            return;
-        }
 
         setRequesting(true);
         try {
-            const requestData = {
-                nurseId: id,
-                reason: requestForm.reason,
-                requirements: requestForm.requirements,
-                location: requestForm.location,
-                address: requestForm.address,
-                duration: parseInt(requestForm.duration)
-            };
-
             const response = await axios.post(
-                `${API_URL}/user/create-request`,
-                requestData,
+                `${API_URL}/user/send-request/${id}`,
+                {},
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
             if (response.data.status) {
                 toast.success('Request sent successfully!');
-                setShowRequestModal(false);
-                setRequestForm({
-                    reason: '',
-                    requirements: [],
-                    location: '',
-                    address: '',
-                    duration: ''
-                });
             } else {
                 toast.error(response.data.message || 'Failed to send request');
             }
@@ -164,103 +88,6 @@ const NurseProfileUser = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 p-8 mt-16">
-            <Dialog open={showRequestModal} onOpenChange={setShowRequestModal}>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>Send Request to Nurse</DialogTitle>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="reason">Reason for Request *</Label>
-                            <Textarea
-                                id="reason"
-                                name="reason"
-                                value={requestForm.reason}
-                                onChange={handleInputChange}
-                                placeholder="Explain why you need nursing assistance"
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="requirements">Special Requirements</Label>
-                            <div className="flex gap-2">
-                                <Input
-                                    id="requirements"
-                                    value={newRequirement}
-                                    onChange={(e) => setNewRequirement(e.target.value)}
-                                    onKeyPress={handleKeyPress}
-                                    placeholder="Add a requirement"
-                                    className="flex-1"
-                                />
-                                <Button 
-                                    type="button" 
-                                    onClick={addRequirement}
-                                    variant="outline"
-                                    className="px-4"
-                                >
-                                    +
-                                </Button>
-                            </div>
-                            {requestForm.requirements.length > 0 && (
-                                <div className="mt-2 space-y-2">
-                                    {requestForm.requirements.map((req, index) => (
-                                        <div key={index} className="flex items-center gap-2 bg-gray-50 p-2 rounded">
-                                            <span className="flex-1">{req}</span>
-                                            <Button
-                                                type="button"
-                                                onClick={() => removeRequirement(index)}
-                                                variant="ghost"
-                                                className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
-                                            >
-                                                ×
-                                            </Button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="location">Location *</Label>
-                            <Input
-                                id="location"
-                                name="location"
-                                value={requestForm.location}
-                                onChange={handleInputChange}
-                                placeholder="City or area"
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="address">Full Address *</Label>
-                            <Textarea
-                                id="address"
-                                name="address"
-                                value={requestForm.address}
-                                onChange={handleInputChange}
-                                placeholder="Enter your complete address"
-                            />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="duration">Duration (days) *</Label>
-                            <Input
-                                id="duration"
-                                name="duration"
-                                type="number"
-                                min="1"
-                                value={requestForm.duration}
-                                onChange={handleInputChange}
-                                placeholder="Number of days required"
-                            />
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setShowRequestModal(false)}>
-                            Cancel
-                        </Button>
-                        <Button onClick={submitRequest} disabled={requesting}>
-                            {requesting ? 'Sending...' : 'Send Request'}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -381,11 +208,20 @@ const NurseProfileUser = () => {
                                 </Button>
                                 <Button
                                     onClick={handleSendRequest}
-                                    disabled={!nurseData.IsAvailable}
+                                    disabled={!nurseData.IsAvailable || requesting}
                                     className="bg-sky-700 hover:bg-sky-800"
                                 >
-                                    <FaCalendarAlt className="mr-2" />
-                                    Send Request
+                                    {requesting ? (
+                                        <>
+                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                            Sending Request...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FaCalendarAlt className="mr-2" />
+                                            Send Request
+                                        </>
+                                    )}
                                 </Button>
                             </div>
                         </div>
@@ -396,4 +232,4 @@ const NurseProfileUser = () => {
     );
 };
 
-export default NurseProfileUser;
+export default ViewNurseProfile;
