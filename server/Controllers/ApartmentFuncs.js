@@ -1,363 +1,45 @@
-const axios = require('axios');
+const Apartment = require('../models/ApartmentModel');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-const dotenv = require("dotenv");
-dotenv.config({ path: "./config.env" });
-const jwt=require('jsonwebtoken');
-const secret_key=process.env.secret_key;
-
-const { default: getImgurLink } = require('../middlewares/ImgurAPI');
-const NurseModel = require('../models/NurseModel');
-const UserModel = require('../models/UserModel');
-const authModel = require('../models/authModel');
-const { sendMail } = require('../middlewares/nodeMailer');
-const RequestModel = require('../models/RequestModel');
-const ApartmentModel = require('../models/ApartmentModel');
-
-
-
-// SIGNUP
-
-module.exports.createApartment= async function createApartment(req,res){
-    try {
-        let data=req.body; 
-
-        const link = await getImgurLink(data.ImgUrl);
-        data.ImgUrl=link;
-
-        // generating imgur links of apartment images
-        let extImgs=[];
-        for(let i=0;i<data.ApartmentImages.length;i++){
-            let templ=await getImgurLink(data.ApartmentImages[i]);
-            extImgs.push(templ);
-        }
-        data.ApartmentImages=extImgs;
-
-        let apartment=await ApartmentModel.create(data);
-        
-        const ip =
-        req.headers['x-forwarded-for'] ||
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress;
-
-        const payload={
-          uuid:apartment._id,
-          Role:'Apartment',
-          IPV4:ip,
-        }
-
-        const token=jwt.sign(payload,secret_key);
-
-        let auth= await authModel.create({UserID:apartment._id,Role:"Apartment",SessionID:token,IPV4:ip});
-
-        res.json({
-            status:true,
-            token:token,
-        });
-        
-    } catch (error) {
-        res.json({
-            message:error.message,
-            status:false
-        })
+exports.apartmentSignup = async (req, res) => {
+  const { name, email, password, address } = req.body;
+  const images = req.body.images || [];
+  try {
+    const existing = await Apartment.findOne({ email });
+    if (existing) {
+      return res.status(400).json({ message: 'Apartment already registered' });
     }
-}
-
-
-
-
-// LOGIN
-// OTP generation and mail
-module.exports.ApartmentLogin= async function ApartmentLogin(req,res){
-    try {
-        let data=req.body;
-        let apartment=await ApartmentModel.findOne(data.Email);
-        
-        if(apartment){
-            if(data.Password===apartment.Password){
-                
-                let otp = parseInt(crypto.randomBytes(3).toString("hex"),16).toString().substring(0, 6);
-                
-                let auth=await authModel.findOne({UserID:apartment._id});
-                
-                if(auth){
-                    auth.OTP=otp;
-                    await auth.save();
-                }
-                else{
-                    let auth= await authModel.create({UserID:user._id,Role:"Apartment",OTP:otp});
-                }
-
-                //Mailing The OTP to the registered mail
-                sendMail(apartment.Email,otp);
-
-                res.json({
-                    status:true,
-                    message:"OTP has been sent"
-                });   
-            }
-            else{
-                res.json({
-                    status:false,
-                    message:"Incorrect password"
-                });
-            }
-        }
-        else{
-            res.json({
-                status:false,
-                message:"User does not exits"
-            });
-        }
-    } catch (error) {
-        res.json({
-            message:error.message,
-            status:false
-        })
-    }
-}
-
-
-
-//   OTP and JWT generation
-module.exports.ApartmentLoginPart2= async function ApartmentLoginPart2(req,res){
-    try {
-        let data=req.body;
-        let apartment=await ApartmentModel.findOne(data.Email);
-        
-        if(apartment){
-            if(data.Password===apartment.Password){
-                
-                let auth=await authModel.findOne({UserID:apartment._id});
-                
-                if(auth.OTP===data.OTP){
-
-                    const ip =
-                    req.headers['x-forwarded-for'] ||
-                    req.connection.remoteAddress ||
-                    req.socket.remoteAddress ||
-                    req.connection.socket.remoteAddress;
-                    
-                    const payload={
-                        uuid:apartment._id,
-                        Role:"Apartment",
-                        IPV4:ip,
-                    }
-                    const token=jwt.sign(payload,secret_key);
-                    
-                    auth.SessionID=token;
-                    auth.timestamp=Date.now();
-                    auth.IPV4=ip;
-                    auth.OTP=undefined;
-                    await auth.save();
-                    
-                    res.json({ 
-                        status:true,
-                        token:token,
-                    });   
-                }
-                else{
-                    res.json({
-                        status:false,
-                        message:"Incorrect OTP",
-                    });
-                }
-            }
-            else{
-                res.json({
-                    status:false,
-                    message:"Incorrect password"
-                });
-            }
-        }
-        else{
-            res.json({
-                status:false,
-                message:"User does not exits"
-            });
-        }
-        
-    } catch (error) {
-        res.status(500).json({
-            message:error.message
-        })
-    }
-  }   
-  
-
-
-
-
-
-
-// // Fetch Requests
-// module.exports.Requests= async function Requests(req,res){
-//     try {
-//         let nurse=res.nurse;
-
-        
-//         let requests=[];
-
-//         for(let i in nurse.Requests){
-//             let requestId=nurse.Requests[i];
-//             let request=await RequestModel.findById(requestId);
-
-//             let user=await UserModel.findById(request.UserId);
-//             request={...request,
-//                     ImgUrl:user.ImgUrl,
-//                     Name:user.Name,
-//                     Email:user.Email,
-//                     PhoneNumber:user.PhoneNumber ,
-//                     Address:user.Address,
-//             };
-//             requests.push(request);
-//         }
-
-
-//         res.json({
-//             status:true,
-//             Requests:requests,
-//         });
-        
-//     } catch (error) {
-//         res.json({
-//             message:error.message,
-//             status:false
-//         })
-//     }
-        
-// }
-
-// Get all apartments
-module.exports.getAllApartments = async function getAllApartments(req, res) {
-    try {
-        const apartments = await ApartmentModel.find();
-        res.status(200).json({
-            status: 'success',
-            data: apartments
-        });
-    } catch (err) {
-        res.status(500).json({
-            status: 'error',
-            message: err.message
-        });
-    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const apartment = new Apartment({
+      name,
+      email,
+      password: hashedPassword,
+      address,
+      images
+    });
+    await apartment.save();
+    const token = jwt.sign({ id: apartment._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    res.status(201).json({ token, apartment });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
 };
 
-// Get apartment by ID
-module.exports.getApartmentById = async function getApartmentById(req, res) {
-    try {
-        const apartment = await ApartmentModel.findById(req.params.id);
-        if (!apartment) {
-            return res.status(404).json({
-                status: 'error',
-                message: 'Apartment not found'
-            });
-        }
-        res.status(200).json({
-            status: 'success',
-            data: apartment
-        });
-    } catch (err) {
-        res.status(500).json({
-            status: 'error',
-            message: err.message
-        });
+exports.apartmentLogin = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const apartment = await Apartment.findOne({ email });
+    if (!apartment) {
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
-};
-
-// Create apartment booking request
-module.exports.createBookingRequest = async function createBookingRequest(req, res) {
-    try {
-        const { apartmentId, userId, checkInDate, checkOutDate, requirements } = req.body;
-
-        // Validate apartment exists
-        const apartment = await ApartmentModel.findById(apartmentId);
-        if (!apartment) {
-            return res.status(404).json({
-                status: 'error',
-                message: 'Apartment not found'
-            });
-        }
-
-        // Create booking request
-        const request = await RequestModel.create({
-            ApartmentId: apartmentId,
-            UserId: userId,
-            RequestType: 'apartment',
-            Requirements: requirements,
-            CheckInDate: new Date(checkInDate),
-            CheckOutDate: new Date(checkOutDate),
-            Amount: apartment.Price,
-            Status: 0
-        });
-
-        // Update user's RequestSent array
-        await UserModel.findByIdAndUpdate(userId, {
-            $push: { RequestSent: request._id }
-        });
-
-        // Update apartment's Requests array
-        await ApartmentModel.findByIdAndUpdate(apartmentId, {
-            $push: { Requests: request._id }
-        });
-
-        res.status(201).json({
-            status: 'success',
-            data: request
-        });
-    } catch (err) {
-        res.status(500).json({
-            status: 'error',
-            message: err.message
-        });
+    const validPassword = await bcrypt.compare(password, apartment.password);
+    if (!validPassword) {
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
-};
-
-// Update booking request status
-module.exports.updateBookingStatus = async function updateBookingStatus(req, res) {
-    try {
-        const { requestId, status } = req.body;
-
-        const request = await RequestModel.findByIdAndUpdate(requestId, {
-            Status: status
-        }, { new: true });
-
-        if (!request) {
-            return res.status(404).json({
-                status: 'error',
-                message: 'Request not found'
-            });
-        }
-
-        res.status(200).json({
-            status: 'success',
-            data: request
-        });
-    } catch (err) {
-        res.status(500).json({
-            status: 'error',
-            message: err.message
-        });
-    }
-};
-
-// Get apartment owner's booking requests
-module.exports.getApartmentRequests = async function getApartmentRequests(req, res) {
-    try {
-        const requests = await RequestModel.find({
-            ApartmentId: req.params.apartmentId,
-            RequestType: 'apartment'
-        }).populate('UserId');
-
-        res.status(200).json({
-            status: 'success',
-            data: requests
-        });
-    } catch (err) {
-        res.status(500).json({
-            status: 'error',
-            message: err.message
-        });
-    }
+    const token = jwt.sign({ id: apartment._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    res.status(200).json({ token, apartment });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
 };

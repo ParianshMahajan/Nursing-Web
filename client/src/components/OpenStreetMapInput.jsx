@@ -14,6 +14,7 @@ const OpenStreetMapInput = ({
   const [marker, setMarker] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isFetchingCurrentLocation, setIsFetchingCurrentLocation] = useState(false);
 
   // Debounce function
   const debounce = (func, timeout = 300) => {
@@ -106,46 +107,55 @@ const OpenStreetMapInput = ({
   // Handle current location
   const handleUseCurrentLocation = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
+      setIsFetchingCurrentLocation(true);
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
 
-        try {
-          // Reverse geocoding
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
-          );
-          const data = await response.json();
+          try {
+            // Reverse geocoding
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
+            );
+            const data = await response.json();
 
-          // Update input
-          if (inputRef.current) {
-            inputRef.current.value = data.display_name;
+            // Update input
+            if (inputRef.current) {
+              inputRef.current.value = data.display_name;
+            }
+
+            // Remove existing marker
+            if (marker) {
+              map.removeLayer(marker);
+            }
+
+            // Add new marker
+            const newMarker = L.marker([latitude, longitude]).addTo(map);
+            setMarker(newMarker);
+
+            // Center map
+            map.setView([latitude, longitude], 13);
+
+            // Prepare return object
+            const returnObj = {
+              coords: { lat: latitude, lng: longitude },
+              address: data.display_name
+            };
+
+            // Trigger callbacks
+            onChange && onChange(returnObj);
+            onUseCurrentLocation && onUseCurrentLocation(data);
+          } catch (error) {
+            console.error('Reverse geocoding error:', error);
+          } finally {
+            setIsFetchingCurrentLocation(false);
           }
-
-          // Remove existing marker
-          if (marker) {
-            map.removeLayer(marker);
-          }
-
-          // Add new marker
-          const newMarker = L.marker([latitude, longitude]).addTo(map);
-          setMarker(newMarker);
-
-          // Center map
-          map.setView([latitude, longitude], 13);
-
-          // Prepare return object
-          const returnObj = {
-            coords: { lat: latitude, lng: longitude },
-            address: data.display_name
-          };
-
-          // Trigger callbacks
-          onChange && onChange(returnObj);
-          onUseCurrentLocation && onUseCurrentLocation(data);
-        } catch (error) {
-          console.error('Reverse geocoding error:', error);
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          setIsFetchingCurrentLocation(false);
         }
-      });
+      );
     }
   };
 
@@ -204,20 +214,33 @@ const OpenStreetMapInput = ({
 
       {/* Action Buttons */}
       <div className="flex space-x-3">
-        {/* Use Current Location Button */}
-        <button
+      {/* Use Current Location Button */}
+      <span
           onClick={handleUseCurrentLocation}
-          className="flex-1 flex items-center justify-center space-x-2 bg-blue-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="flex-1 flex items-center justify-center space-x-2 bg-blue-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer"
         >
-          <Crosshair className="w-5 h-5" />
-          <span>Use Current Location</span>
-        </button>
+          {isFetchingCurrentLocation ? (
+            <>
+              <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>Loading...</span>
+            </>
+          ) : (
+            <>
+              <Crosshair className="w-5 h-5" />
+              <span>Use Current Location</span>
+            </>
+          )}
+        </span>
       </div>
 
       {/* Map */}
       <div
         ref={mapRef}
         className="w-full h-64 bg-gray-200 rounded-lg shadow-md"
+        style={{zIndex: 1}}
       />
     </div>
   );
